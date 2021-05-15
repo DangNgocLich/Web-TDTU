@@ -40,6 +40,9 @@ const regisController = async(req, res) => {
     return User.find({username}).then(user => {
         if(user) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
         return User.create({username, password, displayName}).then(newUser => res.status(200).json({ resultCode: 1, "messenge": "Dang ky thanh cong" }))
+    }).catch(err => {
+        console.log(err);
+        return res.status(500).json({ resultCode: -1, "messenge": "Loi server" })
     })
 }
 
