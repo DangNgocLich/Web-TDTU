@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const addNotifycationController = async(req, res) => {
     const { title, content, department } = req.body
-    if (!title || !content || !department) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
+    if (!title || !content || !department) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
     let body = {}
     for (const key in req.body) {
         if (req.body[key]) {
@@ -25,7 +25,7 @@ const getNotificationById = async(req, res) => {
             path: "department",
             match: { _id: { $eq: id } }
         })
-    return res.status(200).json(data.filter((x) => x.department !== null))
+    return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
 }
 const updateNotifycationController = async(req, res) => {
     const { title, content, } = req.body
@@ -36,7 +36,7 @@ const updateNotifycationController = async(req, res) => {
             data[key] = req.body[key]
         }
     }
-    if (!title || !content) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
+    if (!title || !content) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
     await Notification.findOneAndUpdate({ _id: id }, data)
     return res.status(200).json({ resultCode: 1, "messenge": "Cập nhập thành công" }, )
 }

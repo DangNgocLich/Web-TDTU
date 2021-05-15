@@ -3,7 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 const { accessTokenSecret } = require('../middleware/AuthMiddleware');
 const { generateToken } = require('../helpers/jwt.helper');
-const { loginController, regisController, changepassWordController, updateProfileController } = require('../controllers/authController');
+const { loginController, regisController, changepassWordController, updateProfileController, checkToken } = require('../controllers/authController');
 require('../config/passport')(passport);
 router.use(passport.initialize());
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -19,6 +19,6 @@ router.post('/login', loginController)
 router.post('/register', regisController)
 router.post('/updateProfile', updateProfileController)
 router.post('/changepassword', changepassWordController)
-
+router.post('/checkToken', checkToken)
 
 module.exports = router
