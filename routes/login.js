@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwtHelper = require("../helpers/jwt.helper");
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "lichbmtlqd@gmail.com";
+var flash = require('express-flash-messages')
+router.use(flash())
 router.use(passport.initialize());
 router.use(passport.session());
 require('../config/passport')(passport)
@@ -39,7 +41,14 @@ router.post('/register', async(req, res, next) => {
     }
 
 })
-
+router.post('/changepassword', async(req, res, next) => {
+    // accessToken = await jwtHelper.generateToken();
+    const { userName, passWord } = req.body
+    console.log(userName, passWord)
+    if (!userName || !passWord) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
+    const data = await User.findOneAndUpdate({ 'userName': userName }, { passWord: passWord })
+    return res.status(200).json({ "message": "Đổi Mật khẩu thành công" })
+})
 
 router.post('/', async(req, res, next) => {
     const { userName, passWord } = req.body
@@ -64,10 +73,7 @@ router.post('/', async(req, res, next) => {
                 })
             }
         }
-
-
     })
-
 })
 
 
@@ -82,6 +88,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 );
 
 router.get('/failed', (req, res) => {
-    res.end("vui long dang nhap lai")
+    // req.flash('notify', 'This is a test notification.')
+    res.redirect('/login?error');
 })
 module.exports = router;

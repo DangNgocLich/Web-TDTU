@@ -5,8 +5,8 @@ var router = express.Router();
 // const AuthMiddleWare = require("../middleware/AuthMiddleware");
 const Department = require('../model/Department');
 // router.use(AuthMiddleWare.isAuth);
-router.get('/getDepartment', function(req, res, next) {
-    // res.status(200).json()
+router.get('/getDepartment', async function(req, res, next) {
+    res.status(200).json(await Department.find({}))
 });
 router.post('/addDepartment', async function(req, res, next) {
     const { label, value } = req.body
