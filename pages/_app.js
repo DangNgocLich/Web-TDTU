@@ -2,6 +2,8 @@ import Head from 'next/head';
 import App from 'next/app'
 import 'tailwindcss/tailwind.css'
 import "nprogress/nprogress.css";
+import NextNprogress from 'nextjs-progressbar';
+
 
 class MainApp extends App {
   render() {
