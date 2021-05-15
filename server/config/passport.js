@@ -9,7 +9,7 @@ var configAuth = require('./auth');
 // load  user model
 var User = require('../model/User');
 
-module.exports = function(passport) {
+module.exports = function (passport) {
 
 
     // =========================================================================
@@ -19,13 +19,13 @@ module.exports = function(passport) {
     // passport needs ability to serialize and unserialize users out of session
 
     // used to serialize the user for the session
-    passport.serializeUser(function(user, done) {
+    passport.serializeUser(function (user, done) {
         done(null, user.id);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
+    passport.deserializeUser(function (id, done) {
+        User.findById(id, function (err, user) {
             done(err, user);
         });
     });
@@ -39,15 +39,15 @@ module.exports = function(passport) {
     // GOOGLE ==================================================================
     // =========================================================================
     passport.use(new GoogleStrategy({
-            clientID: configAuth.googleAuth.clientID,
-            clientSecret: configAuth.googleAuth.clientSecret,
-            callbackURL: configAuth.googleAuth.callbackURL,
-        },
-        function(token, refreshToken, profile, done) {
-            process.nextTick(function() {
+        clientID: configAuth.googleAuth.clientID,
+        clientSecret: configAuth.googleAuth.clientSecret,
+        callbackURL: configAuth.googleAuth.callbackURL,
+    },
+        function (token, refreshToken, profile, done) {
+            process.nextTick(function () {
 
                 // // tìm trong db xem có user nào đã sử dụng google id này chưa
-                User.findOne({ 'userName': profile.id }, function(err, user) {
+                User.findOne({ username: profile.emails[0].value }, function (err, user) {
                     if (err)
                         return done(err);
                     if (user) {
@@ -56,19 +56,21 @@ module.exports = function(passport) {
                     } else {
                         if (profile.emails[0].value.split("@")[1] == "student.tdtu.edu.vn") {
                             // if the user isnt in our database, create a new user
+                            var newUser = new User();
+
                             // set all of the relevant information
                             // newUser.google.id = profile.id;
                             // newUser.google.token = token;
-                            // newUser.displayName = profile.displayName;
-                            // newUser.Role = "1"
-                            // newUser.UserName = profile.emails[0].value; // pull the first email
-                            return done(null, profile);
+                            newUser.displayName = profile.displayName;
+                            newUser.role = "1"
+                            newUser.username = profile.emails[0].value; // pull the first email
+                            newUser.password = profile.id
+                            newUser.save(function (err) {
+                                if (err)
+                                    throw err;
+                                return done(null, newUser);
+                            });
                             // save the user
-                            // newUser.save(function (err) {
-                            //   if (err)
-                            //     throw err;
-                            //   return done(null, newUser);
-                            // });
                         } else
                             return done(null, null)
                     }

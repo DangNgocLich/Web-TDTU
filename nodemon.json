@@ -1,0 +1,4 @@
+{
+  "watch": ["./server"],
+  "ignore": ["src/**/*.spec.ts","node_modules/*", "files/*", "public/*"]
+}

@@ -4,7 +4,7 @@
  */
 
 const mongoose = require('mongoose');
-const uri = "mongodb://localhost:27017/admin";
+const uri = "mongodb://localhost:27017/tdt_social";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 // console.log(mongoose.connection)
 mongoose.Promise = global.Promise;

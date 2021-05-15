@@ -43,4 +43,5 @@
  
  module.exports = {
    isAuth: isAuth,
+   accessTokenSecret
  };
