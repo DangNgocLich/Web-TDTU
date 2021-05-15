@@ -5,9 +5,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-  username: { type: String, required: true },
-  password: { type: String, required: true },
-  displayName: { type: String, required: true }
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    displayName: { type: String, required: true },
+    role: { type: String, enum: ["1", "2", "3"] },
+    picture: { type: String, },
+    className: { type: String, },
+    faculty: { type: String, },
+    inNew: Boolean,
 });
 var User = mongoose.model('User', UserSchema, 'User');
 
