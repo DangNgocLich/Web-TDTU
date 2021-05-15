@@ -5,7 +5,7 @@ const { accessTokenSecret } = require('../middleware/AuthMiddleware');
 const jwtHelper = require("../helpers/jwt.helper");
 const loginController = async(req, res) => {
     const { username, password } = req.body
-    if (!username || !password) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
+    if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
     User.findOne({ 'username': username }, async function(err, user) {
         if (!user)
             return res.status(400).json({
@@ -38,13 +38,13 @@ const loginController = async(req, res) => {
 const regisController = async(req, res) => {
     const { username, password, displayName } = req.body
     console.log(username, password, displayName)
-    if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
+    if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
     return User.find({ username }).then(user => {
-        if (user.length > 0) return res.status(400).json({ resultCode: -1, "messenge": "Tài Khoản Đã Tồn Tại" })
-        return User.create({ username, password, displayName }).then(newUser => res.status(200).json({ resultCode: 1, "messenge": "Dang ky thanh cong" }))
+        if (user.length > 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Đã Tồn Tại" })
+        return User.create({ username, password, displayName }).then(newUser => res.status(200).json({ resultCode: 1, "message": "Dang ky thanh cong" }))
     }).catch(err => {
         console.log(err);
-        return res.status(500).json({ resultCode: -1, "messenge": "Loi server" })
+        return res.status(500).json({ resultCode: -1, "message": "Loi server" })
     })
 }
 
@@ -56,16 +56,16 @@ const updateProfileController = async(req, res) => {
             data[key] = req.body[key]
         }
     }
-    if (!username) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
+    if (!username) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
     await User.findOneAndUpdate({ username: username }, data)
-    return res.status(200).json({ resultCode: 1, "messenge": "register thành công" }, )
+    return res.status(200).json({ resultCode: 1, "message": "register thành công" }, )
 }
 
 
 const changepassWordController = async(req, res) => {
     const { username, password } = req.body
     console.log(username, password)
-    if (!username || !password) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
+    if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
     const data = await User.findOneAndUpdate({ 'username': username }, { password: password })
     return res.status(200).json({ resultCode: 1, "message": "Đổi Mật khẩu thành công" })
 }
