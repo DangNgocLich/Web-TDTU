@@ -13,7 +13,9 @@ require('../config/passport')(passport)
 router.get('/', function(req, res, next) {
     res.render("login")
 });
-
+router.get('/register', async(req, res, next) => {
+    res.render("singin")
+})
 router.post('/register', async(req, res, next) => {
     // accessToken = await jwtHelper.generateToken();
     const { userName, passWord } = req.body
@@ -74,8 +76,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login/failed' }),
     function(req, res) {
         // Successful authentication, redirect home.
-
-        console.log(req.user)
+        console.log(req.data)
         res.redirect('/');
     }
 );

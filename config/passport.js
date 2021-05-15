@@ -56,15 +56,13 @@ module.exports = function(passport) {
                     } else {
                         if (profile.emails[0].value.split("@")[1] == "student.tdtu.edu.vn") {
                             // if the user isnt in our database, create a new user
-                            var newUser = new User();
-
                             // set all of the relevant information
                             // newUser.google.id = profile.id;
                             // newUser.google.token = token;
-                            newUser.displayName = profile.displayName;
-                            newUser.Role = "1"
-                            newUser.UserName = profile.emails[0].value; // pull the first email
-                            return done(null, newUser);
+                            // newUser.displayName = profile.displayName;
+                            // newUser.Role = "1"
+                            // newUser.UserName = profile.emails[0].value; // pull the first email
+                            return done(null, profile);
                             // save the user
                             // newUser.save(function (err) {
                             //   if (err)

@@ -14,6 +14,7 @@ require('./config/passport')(passport);
 const AuthMiddleWare = require("./middleware/AuthMiddleware");
 //route
 var indexRouter = require('./routes/index');
+var departmentRouter = require('./routes/derpartment');
 var loginRouter = require('./routes/login');
 // var googleRouter = require('./auth/routes');
 //mogon
@@ -35,16 +36,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 
-app.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-app.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
-    function(req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/good');
-    }
-);
-
 app.use('/login', loginRouter);
+app.use('/api/', departmentRouter);
 app.use('/', indexRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
