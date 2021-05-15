@@ -4,8 +4,13 @@
  */
 
 const mongoose = require('mongoose');
-const uri = "mongodb://localhost:27017/tdt_social";
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri = "mongodb+srv://admin:123123123@cluster0.oajg1.mongodb.net/tdt_social";
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+});
 // console.log(mongoose.connection)
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
