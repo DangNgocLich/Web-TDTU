@@ -31,4 +31,4 @@ app.listen(port, (err) => {
     console.log('> Server listening on port:', port)
 })
 
-// appNext.prepare()
+appNext.prepare()
