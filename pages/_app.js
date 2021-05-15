@@ -9,7 +9,7 @@ class MainApp extends App {
   render() {
     const { router, Component, pageProps } = this.props
     return (
-      <div>
+      <div className = 'flex'>
         <Head>
           <link rel="icon" type="image/png" href={'public/favicon.png'} />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
