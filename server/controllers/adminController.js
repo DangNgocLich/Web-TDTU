@@ -2,7 +2,7 @@ const Department = require("../model/Department")
 
 const addDepartmentController = async function(req, res, next) {
     const { label, value } = req.body
-    if (!label || !value) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
+    if (!label || !value) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     const data = await Department.findOne({ 'value': value })
     var department = new Department({ label: label, value: value })
     if (data) {

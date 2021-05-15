@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const addNotifycationController = async(req, res) => {
     const { title, content, department } = req.body
-    if (!title || !content || !department) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
+    if (!title || !content || !department) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     let body = {}
     for (const key in req.body) {
         if (req.body[key]) {
@@ -11,10 +11,8 @@ const addNotifycationController = async(req, res) => {
         }
     }
     var notificaltion = new Notification(body)
-
     notificaltion.save(function(err, notificaltion) {
         if (err) return console.error(err);
-
         res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" }, )
     });
 }
@@ -37,7 +35,7 @@ const updateNotifycationController = async(req, res) => {
             data[key] = req.body[key]
         }
     }
-    if (!title || !content) return res.status(400).json({ resultCode: -1, "message": "vui long nhap thong tin" })
+    if (!title || !content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     await Notification.findOneAndUpdate({ _id: id }, data)
     return res.status(200).json({ resultCode: 1, "message": "Cập nhập thành công" }, )
 }
