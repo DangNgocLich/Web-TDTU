@@ -15,7 +15,7 @@ const app = express()
 mongodb
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static('../public','public'));
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 
@@ -31,4 +31,4 @@ app.listen(port, (err) => {
     console.log('> Server listening on port:', port)
 })
 
-// appNext.prepare()
+appNext.prepare()

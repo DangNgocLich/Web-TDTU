@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const bcrypt = require('bcrypt');
-
+const { generateToken } = require("../helpers/jwt.helper");
+const {accessTokenSecret} = require('../middleware/AuthMiddleware')
 const loginController = async(req, res) => {
     const { username, password } = req.body
     if (!username || !password) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
@@ -13,7 +14,7 @@ const loginController = async(req, res) => {
         else {
             if (username === "admin") {
                 if (password === user.password) {
-                    accessToken = await jwtHelper.generateToken(username, accessTokenSecret, "1d");
+                    const accessToken = await generateToken(username, accessTokenSecret, "1d");
                     return res.status(200).json({
                         resultCode: 1,
                         accessToken
@@ -23,7 +24,7 @@ const loginController = async(req, res) => {
             } else {
                 bcrypt.compare(password, user.password).then(async result => {
                     if (result) {
-                        accessToken = await jwtHelper.generateToken(username, accessTokenSecret, "1d");
+                        accessToken = await generateToken(username, accessTokenSecret, "1d");
                         return res.status(200).json({ accessToken });
                     } else
                         return res.status(400).json({ resultCode: -1, "message": "Tài khoản hoặc mật khẩu sai vui lòng kiểm tra" })
