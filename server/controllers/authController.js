@@ -1,7 +1,7 @@
 const User = require("../model/User");
 const bcrypt = require('bcrypt');
 const { generateToken } = require("../helpers/jwt.helper");
-const {accessTokenSecret} = require('../middleware/AuthMiddleware')
+const { accessTokenSecret } = require('../middleware/AuthMiddleware')
 const loginController = async(req, res) => {
     const { username, password } = req.body
     if (!username || !password) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
@@ -36,10 +36,11 @@ const loginController = async(req, res) => {
 
 const regisController = async(req, res) => {
     const { username, password, displayName } = req.body
-    if (!username || !password) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
-    return User.find({username}).then(user => {
-        if(user) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
-        return User.create({username, password, displayName}).then(newUser => res.status(200).json({ resultCode: 1, "messenge": "Dang ky thanh cong" }))
+    console.log(username, password, displayName)
+    if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
+    return User.find({ username }).then(user => {
+        if (user.length > 0) return res.status(400).json({ resultCode: -1, "messenge": "Tài Khoản Đã Tồn Tại" })
+        return User.create({ username, password, displayName }).then(newUser => res.status(200).json({ resultCode: 1, "messenge": "Dang ky thanh cong" }))
     }).catch(err => {
         console.log(err);
         return res.status(500).json({ resultCode: -1, "messenge": "Loi server" })
