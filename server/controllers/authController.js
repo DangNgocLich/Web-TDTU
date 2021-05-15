@@ -98,4 +98,5 @@ module.exports = {
     regisController,
     changepassWordController,
     updateProfileController,
+    checkToken
 }
