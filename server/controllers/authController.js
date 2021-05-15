@@ -47,13 +47,14 @@ const regisController = async(req, res) => {
         res.status(400).json({ resultCode: -1, "messenge": "User ton tai" })
     } else {
         bcrypt.hash(password, saltRounds).then(hash => {
-
-            var user = new User({ username: username, password: hash, Role: "2" })
+            body[password] = hash
+            body[Role] = "2"
+            var user = new User(body)
             console.log(55555, user)
             user.save(function(err, user) {
                 if (err) return console.error(err);
                 console.log(user)
-                res.status(200).json({ resultCode: 1, "messenge": "register thanh cong" }, )
+                res.status(200).json({ resultCode: 1, "messenge": "register thành công" }, )
             });
         })
     }
@@ -69,12 +70,11 @@ const updateProfileController = async(req, res) => {
     }
     if (!username) return res.status(400).json({ "messenge": "vui long nhap thong tin" })
     await User.findOneAndUpdate({ username: username }, data)
-    return res.status(200).json({ resultCode: 1, "messenge": "register thanh cong" }, )
+    return res.status(200).json({ resultCode: 1, "messenge": "register thành công" }, )
 }
 
 
 const changepassWordController = async(req, res) => {
-    // accessToken = await jwtHelper.generateToken();
     const { username, password } = req.body
     console.log(username, password)
     if (!username || !password) return res.status(400).json({ resultCode: -1, "messenge": "vui long nhap thong tin" })
