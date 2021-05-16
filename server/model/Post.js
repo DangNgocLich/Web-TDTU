@@ -9,7 +9,7 @@ var PostSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     date: { type: Date, required: true, default: now() },
     content: { type: String, required: true },
-    like: { type: number },
+    like: { type: Number },
     comment: { type: Array },
     picture: { type: String, },
     linkvideo: { type: String, },
