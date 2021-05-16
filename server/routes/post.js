@@ -10,12 +10,12 @@ var router = express.Router();
 const Post = require('../model/Post');
 
 router.get('/getPost', async function (req, res, next) {
-    const { page, limit } = req.body
+    const { page, limit } = req.query
     res.status(200).json({
         resultCode: 1,
-        data: await Post.find({}, null, { skip: page * limit }).populate({
+        data: await Post.find({}, null, { skip: parseInt(page * limit) }).populate({
             path: "user",
-        }).limit(limit)
+        }).limit(parseInt(limit))
     })
 });
 
