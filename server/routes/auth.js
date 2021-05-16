@@ -11,7 +11,8 @@ const {
     changepassWordController,
     updateProfileController,
     checkToken,
-    getUserByIDController
+    getUserByIDController,
+    getUserByToken
 } = require('../controllers/authController');
 
 require('../config/passport')(passport);
@@ -32,5 +33,6 @@ router.post('/register', regisController)
 router.post('/updateProfile', updateProfileController)
 router.post('/changepassword', changepassWordController)
 router.post('/checkToken', checkToken)
+router.post('/getUserByToken', getUserByToken)
 router.post('/getUserByID', getUserByIDController)
 module.exports = router

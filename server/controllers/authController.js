@@ -9,7 +9,6 @@ const loginController = async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     User.findOne({ 'username': username }, async function (err, user) {
-        console.log(user)
         if (!user)
             return res.status(400).json({
                 resultCode: -1,
@@ -19,8 +18,8 @@ const loginController = async (req, res) => {
         else {
             bcrypt.compare(password, user.password).then(async result => {
                 if (result) {
-                    accessToken = await generateToken(user, accessTokenSecret, "1d");
-                    return res.status(200).json({ resultCode: 1, accessToken, data: user });
+                    accessToken = await generateToken({ _id: user._id, role: user.role }, accessTokenSecret, "1d");
+                    return res.status(200).json({ resultCode: 1, accessToken });
                 } else
                     return res.status(400).json({ resultCode: -1, "message": "Tài khoản hoặc mật khẩu sai vui lòng kiểm tra" })
             })
@@ -53,6 +52,7 @@ const getUserByIDController = async (req, res) => {
         return res.status(500).json({ resultCode: -1, "message": "Lỗi Sever" })
     })
 }
+
 
 
 const updateProfileController = async (req, res) => {
@@ -100,11 +100,33 @@ const checkToken = async (req, res) => {
     }
 }
 
+const getUserByToken = async (req, res) => {
+    const tokenFromClient = req.body.token
+    if (tokenFromClient) {
+        // Nếu tồn tại token
+        try {
+            // Thực hiện giải mã token xem có hợp lệ hay không?
+            const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
+
+            return res.status(200).json({ resultCode: 1, data: await User.findById(decoded.data.id) })
+            // Cho phép req đi tiếp sang controller.
+        } catch (error) {
+            console.log(error)
+            // Nếu giải mã gặp lỗi: Không đúng, hết hạn...etc:
+            // Lưu ý trong dự án thực tế hãy bỏ dòng debug bên dưới, mình để đây để debug lỗi cho các bạn xem thôi
+            return res.status(400).json({ resultCode: -1, })
+        }
+    } else {
+        // Không tìm thấy token trong request
+        return res.status(400).json({ resultCode: -1, })
+    }
+}
 module.exports = {
     loginController,
     regisController,
     changepassWordController,
     updateProfileController,
     checkToken,
-    getUserByIDController
+    getUserByIDController,
+    getUserByToken
 }
