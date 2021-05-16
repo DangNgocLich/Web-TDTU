@@ -10,16 +10,14 @@ export default function RegisComponent({ router }) {
   const [username, setUsername] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [password, setPassword] = useState('')
-  const [rePassword, setRePassword] = useState('')
-  const [listDepartment, setListDepartment] = useState([])
-  const [department, setdepartment] = useState([])
+  const [listdepartment, setListdepartment] = useState([])
   useEffect(() => {
     getDepartmentAPI().then(result => {
-      if (result.resultCode === 1 && listDepartment !== result.data) {
-        setListDepartment(result.data)
+      if (result.resultCode === 1 && listdepartment !== result.data) {
+        setListdepartment(result.data)
       }
     })
-  }, [listDepartment])
+  }, [listdepartment])
   return (
     <div className='flex flex-col w-screen h-screen justify-center items-center bg-gradient-to-r from-green-400 to-blue-500'>
       <form
@@ -32,7 +30,7 @@ export default function RegisComponent({ router }) {
 
           let department = []
           department.forEach(element => {
-            let temp = Arraydepartment.filter((item) => item.label === element)
+            let temp = listdepartment.filter((item) => item.label === element)
             department.push(temp[0])
           });
           regisAPI({
@@ -83,7 +81,7 @@ export default function RegisComponent({ router }) {
           placeholder="Enter password"
         />
      
-        <ButtonCheckboxMenu data={Arraydepartment.map((x) => x.label)} handleSelect={(event) => setdepartment(event)}></ButtonCheckboxMenu>
+        <ButtonCheckboxMenu data={listdepartment.map((x) => x.label)} handleSelect={(event) => setdepartment(event)}></ButtonCheckboxMenu>
         <Button
           style={{ marginBottom: 20 }}
           variant='contained'
