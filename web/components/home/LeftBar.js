@@ -27,7 +27,7 @@ export default function LeftBar({ router }) {
   }
 
   return (
-    <nav className={'w-72'} aria-label="mailbox folders">
+    <nav className={'min-w-72'} aria-label="mailbox folders">
       <List className='h-full bg-yellow-800'>
         <div className = 'w-full py-2 text-center text-white text-3xl font-bold bg-yellow-900'>
           <p>THÔNG BÁO</p>
