@@ -18,12 +18,12 @@ const addNotifycationController = async(req, res) => {
 }
 const getNotificationById = async(req, res) => {
     const id = req.params.id
-    const { page, limit } = req.body
-    let data = await Notification.find({}, null, { skip: page * limit })
+    const { page, limit } = req.query
+    let data = await Notification.find({}, null, { skip:parseInt( page * limit) })
         .populate({
             path: "department",
             match: { _id: { $eq: id } }
-        }).limit(limit)
+        }).limit(parseInt(limit))
     return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
 }
 const updateNotifycationController = async(req, res) => {

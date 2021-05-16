@@ -18,16 +18,16 @@ const addPostController = async (req, res) => {
 }
 const getPostByUserId = async (req, res) => {
     const id = req.params.id
-    const { page, limit } = req.body
+    const { page, limit } = req.query
     try {
-        let data = await Post.find({}, null, { skip: page * limit })
+        let data = await Post.find({}, null, { skip: parseInt(page * limit )})
             .populate({
                 path: "user",
                 match: { _id: { $eq: id } }
-            }).limit(limit)
+            }).limit(parseInt(limit))
         return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
     } catch (error) {
-        return res.status(400).json({ resultCode: -1, "message": "Kiểm tra id"  })
+        return res.status(400).json({ resultCode: -1, "message": "Kiểm tra id" })
     }
 }
 const updatePostController = async (req, res) => {

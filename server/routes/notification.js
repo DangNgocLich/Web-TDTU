@@ -10,10 +10,10 @@ var router = express.Router();
 const Notification = require('../model/Notification');
 
 router.get('/getNotification', async function(req, res, next) {
-    const { page, limit } = req.body
-    res.status(200).json(await Notification.find({}, null, { skip: page * limit }).populate({
+    const { page, limit } = req.query
+    res.status(200).json(await Notification.find({}, null, { skip: parseInt(page * limit) }).populate({
         path: "department",
-    }).limit(limit))
+    }).limit(parseInt(limit)))
 });
 
 router.get('/getNotificationByDepartment/:id', getNotificationById);

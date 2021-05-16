@@ -2,7 +2,7 @@ import { fetchAPI } from './constant'
 export const loginAPI = (input) => {
   return fetchAPI({
     url: "auth/login",
-    method: "POST",
+    method: "GET",
     body: input
   })
     .then(result => result)
