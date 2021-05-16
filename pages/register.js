@@ -8,17 +8,17 @@ export default function Register(props) {
 }
 export async function getServerSideProps({ req, res }) {
     const { cookies } = req
-    return verifyToken(cookies.accessToken, accessTokenSecret).then(result => {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false,
-            }
-        }
-    }).catch(err => {
+    // return verifyToken(cookies.accessToken, accessTokenSecret).then(result => {
+    //     return {
+    //         redirect: {
+    //             destination: '/',
+    //             permanent: false,
+    //         }
+    //     }
+    // }).catch(err => {
         return {
             props: {
             }
         }
-    })
+    // })
 }

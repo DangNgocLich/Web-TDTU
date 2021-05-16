@@ -7,28 +7,17 @@ import {
   getNotificationByDepartment,
   updateNotificationAPI
 } from '../../api/notificaitionAPI'
-import {
-  getDepartmentAPI
-} from '../../api/department'
+
 export default function HomeComponent({ router }) {
   const [title, settitle] = useState('')
   const [addnotification, setaddnotification] = useState(false)
   const [content, setcontent] = useState('')
-  const [department, setdepartment] = useState([])
-  // useEffect(() => {
-  //   getDepartmentAPI().then(result => result.resultCode && setdepartment(result.data))
-  // }, [department])
-  const handleOpen = () => {
-    setaddnotification(true)
-  }
-  const handleClose = () => {
-    setaddnotification(false)
-  }
+ 
   return (
 
     <div className='flex flex-col w-screen h-screen justify-center items-center bg-gradient-to-r from-green-400 to-blue-500'>
 
-      <button type="button" onClick={handleOpen}>
+      <button type="button" onClick={() => setaddnotification(true)}>
         Open Modal
 </button>
       <Modal
@@ -39,7 +28,7 @@ export default function HomeComponent({ router }) {
 
         }}
         open={addnotification}
-        onClose={handleClose}
+        onClose={() => setaddnotification(false)}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
@@ -94,7 +83,7 @@ export default function HomeComponent({ router }) {
               placeholder="Enter content"
             />
           </div>
-
+         
           <Button
             style={{ marginBottom: 20 }}
             variant='contained'
