@@ -11,6 +11,7 @@ export default function RegisComponent({ router }) {
   const [displayName, setDisplayName] = useState('')
   const [password, setPassword] = useState('')
   const [listdepartment, setListdepartment] = useState([])
+  const [department, setdepartment] = useState([])
   useEffect(() => {
     getDepartmentAPI().then(result => {
       if (result.resultCode === 1 && listdepartment !== result.data) {
@@ -45,7 +46,7 @@ export default function RegisComponent({ router }) {
             }
             alert(result.message)
           })
-          
+
         }}
         className='flex flex-col w-full md:w-96 bg-white rounded-xl p-12'>
         <InputLabel style={{
@@ -80,8 +81,12 @@ export default function RegisComponent({ router }) {
           type="password"
           placeholder="Enter password"
         />
-     
-        <ButtonCheckboxMenu data={listdepartment.map((x) => x.label)} handleSelect={(event) => setdepartment(event)}></ButtonCheckboxMenu>
+        <div style={{
+          width: "100%"
+        }}>
+          <ButtonCheckboxMenu data={listdepartment.map((x) => x.label)} handleSelect={(event) => setdepartment(event)}></ButtonCheckboxMenu>
+
+        </div>
         <Button
           style={{ marginBottom: 20 }}
           variant='contained'
