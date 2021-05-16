@@ -11,7 +11,7 @@ export async function getServerSideProps({ req, res }) {
   if (!cookies.accessToken) {
     return {
       redirect: {
-        destination: '/',
+        destination: '/login',
         permanent: false,
       },
     }

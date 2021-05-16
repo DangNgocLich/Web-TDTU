@@ -12,10 +12,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/auth', authRoute)
+router.use(AuthMiddleWare.isAuth);
 router.use('/public', publicRoute)
 router.use('/notification', notificationRoute)
 router.use('/post', postRoute)
 router.use('/admin', adminRoute)
-router.use(AuthMiddleWare.isAuth);
+
 
 module.exports = router;

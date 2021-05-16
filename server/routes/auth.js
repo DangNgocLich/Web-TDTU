@@ -14,6 +14,7 @@ const {
     getUserByIDController,
     getUserByToken
 } = require('../controllers/authController');
+const AuthMiddleware = require('../middleware/AuthMiddleware');
 
 require('../config/passport')(passport);
 router.use(passport.initialize());
@@ -29,6 +30,7 @@ router.get('/getUser', async function (req, res) {
     res.status(200).json({ resultCode: -1, "message": "Lấy User Thành công", data: await User.find({}) })
 })
 router.post('/login', loginController)
+router.use(AuthMiddleware.isAuth);
 router.post('/register', regisController)
 router.post('/updateProfile', updateProfileController)
 router.post('/changepassword', changepassWordController)
