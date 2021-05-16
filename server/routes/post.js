@@ -1,10 +1,10 @@
 var express = require('express');
 const {
-    addNotifycationController,
-    getNotificationById,
-    updateNotifycationController,
-    deleteNotifycationController
-} = require('../controllers/notifycationController');
+    addPostController,
+    updatePostController,
+    getPostByUserId,
+    deletePostController
+} = require('../controllers/postController');
 var router = express.Router();
 
 const Post = require('../model/Post');
@@ -16,8 +16,8 @@ router.get('/getPost', async function(req, res, next) {
     }).limit(limit))
 });
 
-router.get('/getPost/:id', getNotificationById);
-router.post('/updateNotification/:id', updateNotifycationController);
-router.post('/addNotification', addNotifycationController);
-router.post('/deleteNotification/:id', deleteNotifycationController);
+router.get('/getPost/:id', getPostByUserId);
+router.post('/updatePost/:id', updatePostController);
+router.post('/addPost', addPostController);
+router.post('/deletePost/:id', deletePostController);
 module.exports = router;

@@ -1,7 +1,7 @@
 const Post = require("../model/Post");
 const bcrypt = require('bcrypt');
 
-const addNotifycationController = async(req, res) => {
+const addPostController = async(req, res) => {
     const { userId, content } = req.body
     if (!userId || !content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     let body = {}
@@ -16,18 +16,18 @@ const addNotifycationController = async(req, res) => {
         res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" }, )
     });
 }
-const getNotificationById = async(req, res) => {
+const getPostByUserId = async(req, res) => {
     const id = req.params.id
     const { page, limit } = req.body
-    let data = await Notification.find({}, null, { skip: page * limit })
+    let data = await Post.find({}, null, { skip: page * limit })
         .populate({
-            path: "department",
+            path: "user",
             match: { _id: { $eq: id } }
         }).limit(limit)
     return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
 }
-const updateNotifycationController = async(req, res) => {
-    const { title, content, } = req.body
+const updatePostController = async(req, res) => {
+    const {  content, } = req.body
     const id = req.params.id
     let data = {}
     for (const key in req.body) {
@@ -35,19 +35,19 @@ const updateNotifycationController = async(req, res) => {
             data[key] = req.body[key]
         }
     }
-    if (!title || !content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
-    await Notification.findOneAndUpdate({ _id: id }, data)
+    if (!content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    await Post.findOneAndUpdate({ _id: id }, data)
     return res.status(200).json({ resultCode: 1, "message": "Cập nhập thành công" }, )
 }
-const deleteNotifycationController = async(req, res) => {
+const deletePostController = async(req, res) => {
     const id = req.params.id
-    await Notification.findByIdAndDelete({ _id: id })
+    await Post.findByIdAndDelete({ _id: id })
     return res.status(200).json({ resultCode: 1, "message": "Xóa thành công" }, )
 }
 
 module.exports = {
-    addNotifycationController,
-    updateNotifycationController,
-    getNotificationById,
-    deleteNotifycationController
+    addPostController,
+    updatePostController,
+    getPostByUserId,
+    deletePostController
 }
