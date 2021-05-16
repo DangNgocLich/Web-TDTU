@@ -1,6 +1,6 @@
 import { verifyToken } from "../server/helpers/jwt.helper"
 import { accessTokenSecret } from "../server/middleware/AuthMiddleware"
-import HomeComponent from "../web/components/auth/HomeComponent"
+import HomeComponent from "../web/components/home/HomeComponent"
 
 export default function Index(props) {
   return (

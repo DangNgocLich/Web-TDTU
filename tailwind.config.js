@@ -12,7 +12,7 @@ module.exports = {
         '9/10': '90%'
       },
       minWidth: {
-        '72':'250'
+        '72':'250px'
       },
       colors: {
         white: 'white'

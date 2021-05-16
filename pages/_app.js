@@ -18,9 +18,9 @@ class MainApp extends App {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
         </Head>
         <NextNprogress />
-        {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <LeftBar />}
-        <div className='flex flex-col'>
-          {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <Header />}
+        {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <LeftBar router = {router} />}
+        <div className='flex w-full flex-col'>
+          {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <Header router = {router}/>}
           <Component router={router} />
         </div>
       </div>
