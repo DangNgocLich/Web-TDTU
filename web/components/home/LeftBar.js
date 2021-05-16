@@ -8,12 +8,12 @@ const menu = [
     title: "Phân loại thông báo",
     child: [
       {
-        title: "Phòng ban",
-        onClick: (router) => router.push('/phongban')
+        title: "Tất cả",
+        onClick: (router) => router.push('/tatcathongbao')
       },
       {
-        title: "Chủ đề",
-        onClick: (router) => router.push('/chude')
+        title: "Phòng Ban",
+        onClick: (router) => router.push('/phongban')
       }
     ]
   }

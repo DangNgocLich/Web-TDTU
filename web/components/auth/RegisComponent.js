@@ -5,6 +5,7 @@ import { regisAPI } from '../../api/authAPI'
 import {
   getDepartmentAPI
 } from '../../api/department'
+import ButtonCheckboxMenu from '../home/ButtonCheckboxMenu'
 export default function RegisComponent({ router }) {
   const [username, setUsername] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -12,7 +13,6 @@ export default function RegisComponent({ router }) {
   const [rePassword, setRePassword] = useState('')
   const [Arraydepartment, setArraydepartment] = useState([])
   const [department, setdepartment] = useState([])
-
   useEffect(() => {
     getDepartmentAPI().then(result => {
       if (result.resultCode === 1 && Arraydepartment !== result.data) {
@@ -23,12 +23,23 @@ export default function RegisComponent({ router }) {
   return (
     <div className='flex flex-col w-screen h-screen justify-center items-center bg-gradient-to-r from-green-400 to-blue-500'>
       <form
+        style={{
+          width: "80%",
+
+        }}
         onSubmit={(e) => {
           e.preventDefault();
+
+          let department = []
+          department.forEach(element => {
+            let temp = Arraydepartment.filter((item) => item.label === element)
+            department.push(temp[0])
+          });
           regisAPI({
             username,
             password,
-            displayName
+            displayName,
+            department
           }).then(result => {
             if (result.resultCode === 1) {
               alert("Sign in success")
@@ -36,6 +47,7 @@ export default function RegisComponent({ router }) {
             }
             alert(result.message)
           })
+          
         }}
         className='flex flex-col w-full md:w-96 bg-white rounded-xl p-12'>
         <InputLabel style={{
@@ -67,42 +79,18 @@ export default function RegisComponent({ router }) {
           className='w-full'
           variant='outlined'
           label="Password"
+          type="password"
           placeholder="Enter password"
         />
-        <TextField
-          value={rePassword}
-          onChange={(e) => setRePassword(e.target.value)}
+     
+        <ButtonCheckboxMenu data={Arraydepartment.map((x) => x.label)} handleSelect={(event) => setdepartment(event)}></ButtonCheckboxMenu>
+        <Button
           style={{ marginBottom: 20 }}
-          className='w-full'
-          variant='outlined'
-          label="Repeat password"
-          placeholder="Repeat password"
-        />
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-age-native-simple">Phòng Ban</InputLabel>
-          <Select
-            native
-            label="Phòng Ban"
-            style={{ marginBottom: 20 }}
-            onSelect={(value) => console.log(value)}
-            // onChange={(value) => {
-            //   let data = Arraydepartment.filter((item) => item.value !== value.target.value)
-
-            //   setArraydepartment([])
-            // }}
-            >
-              <option aria-label="None" value="" />
-            { Arraydepartment.map((item, idx) => <option value={item.value}>{item.label}</option>) }
-          </Select>
-        </FormControl>
-      <InputLabel style={{ marginBottom: 20 }} htmlFor="outlined-age-native-simple">Phòng Ban : </InputLabel>
-      <Button
-        style={{ marginBottom: 20 }}
-        variant='contained'
-        color='primary'
-        type='submit'
-      >
-        Sign In
+          variant='contained'
+          color='primary'
+          type='submit'
+        >
+          Sign In
         </Button>
       </form>
     </div >
