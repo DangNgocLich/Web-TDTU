@@ -10,16 +10,16 @@ export default function RegisComponent({ router }) {
   const [displayName, setDisplayName] = useState('')
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
-  const [Arraydepartment, setArraydepartment] = useState([])
+  const [listDepartment, setListDepartment] = useState([])
   const [department, setdepartment] = useState([])
 
   useEffect(() => {
     getDepartmentAPI().then(result => {
-      if (result.resultCode === 1 && Arraydepartment !== result.data) {
-        setArraydepartment(result.data)
+      if (result.resultCode === 1 && listDepartment !== result.data) {
+        setListDepartment(result.data)
       }
     })
-  }, [Arraydepartment])
+  }, [listDepartment])
   return (
     <div className='flex flex-col w-screen h-screen justify-center items-center bg-gradient-to-r from-green-400 to-blue-500'>
       <form
@@ -82,17 +82,19 @@ export default function RegisComponent({ router }) {
           <InputLabel htmlFor="outlined-age-native-simple">Phòng Ban</InputLabel>
           <Select
             native
+            value = {listDepartment}
             label="Phòng Ban"
             style={{ marginBottom: 20 }}
             onSelect={(value) => console.log(value)}
-            // onChange={(value) => {
-            //   let data = Arraydepartment.filter((item) => item.value !== value.target.value)
-
-            //   setArraydepartment([])
-            // }}
+            // onChange = {e => console.log(e.target.value)}
+            onChange={(value) => {
+              // console.log(listDepartment)
+              let data = listDepartment.filter((item) => item.value !== value.target.value)
+              setListDepartment([...data])
+            }}
             >
               <option aria-label="None" value="" />
-            { Arraydepartment.map((item, idx) => <option value={item.value}>{item.label}</option>) }
+            { listDepartment.map((item, idx) => <option value={item.value}>{item.label}</option>) }
           </Select>
         </FormControl>
       <InputLabel style={{ marginBottom: 20 }} htmlFor="outlined-age-native-simple">Phòng Ban : </InputLabel>

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { FaceRounded, AddComment } from '@material-ui/icons'
+import { FaceRounded, AddComment, ArrowRightSharp as CommentIcon } from '@material-ui/icons'
 function PostItem(props) {
 
   const { _id, user, createdAt, socket, comment: comments, content } = props
@@ -47,8 +47,8 @@ function PostItem(props) {
           className='text-gray-700 p-2 focus:outline-none hover:bg-gray-200 rounded-xl'
           type='submit'
         >
-          <AddComment
-            htmlColor='green'
+          <CommentIcon
+            htmlColor='blue'
             fontSize='large'
           />
         </button>
@@ -57,7 +57,7 @@ function PostItem(props) {
         return (
           <div className="flex">
             <FaceRounded
-              fontSize='small'
+              fontSize='large'
             />
             <p>{cm.content}</p>
           </div>

@@ -1,4 +1,4 @@
-const {Post} = require("../model/Post");
+const { Post } = require("../model/Post");
 const bcrypt = require('bcrypt');
 
 const addPostController = async (req, res) => {
@@ -20,25 +20,26 @@ const getPostController = async function (req, res, next) {
     const { page, limit } = req.body
     res.status(200).json({
         resultCode: 1,
-        data: await Post.find({}, null, { skip: page * limit, limit: limit }).populate(['user', 'comment'])
+        data: await Post.find({}, null, { skip: page * limit, limit: limit }).populate(['user',
+            { path: 'comment', options: { sort: { 'createdAt': -1 } } }])
     })
 }
 const getPostByIDController = async function (req, res, next) {
     const { id } = req.query
     res.status(200).json({
         resultCode: 1,
-        data: await Post.findById(id).populate(['user', 'comment'])
+        data: await Post.findById(id).populate(['user', { path: 'comment', options: { sort: { 'createdAt': -1 } } }])
     })
 }
 const getPostByUserId = async (req, res) => {
     const id = req.params.id
     const { page, limit } = req.query
     try {
-        let data = await Post.find({}, null, { skip: parseInt(page * limit )})
-            .populate({
+        let data = await Post.find({}, null, { skip: parseInt(page * limit) })
+            .populate([{
                 path: "user",
                 match: { _id: { $eq: id } }
-            }).limit(parseInt(limit))
+            },{ path: 'comment', options: { sort: { 'createdAt': -1 } } }]).limit(parseInt(limit))
         return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
     } catch (error) {
         return res.status(400).json({ resultCode: -1, "message": "Kiểm tra id" })
