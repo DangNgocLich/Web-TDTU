@@ -5,9 +5,23 @@ import "nprogress/nprogress.css";
 import NextNprogress from 'nextjs-progressbar';
 import LeftBar from '../web/components/home/LeftBar';
 import Header from '../web/components/home/Header';
-
+import io from 'socket.io-client'
+import { URL } from '../web/config/config';
 const excludeLeftBar = ['/login', '/register']
+
 class MainApp extends App {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      socket: null
+    }
+  }
+
+  componentDidMount(){
+    const socketIo = io(URL)
+    this.setState({socket: socketIo})
+  }
 
   render() {
     const { router, Component, pageProps } = this.props
@@ -21,7 +35,7 @@ class MainApp extends App {
         {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <LeftBar router = {router} />}
         <div className='flex w-full flex-col'>
           {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <Header router = {router}/>}
-          <Component router={router} />
+          <Component router={router} socket = {this.state.socket} />
         </div>
       </div>
     )

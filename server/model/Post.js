@@ -10,10 +10,19 @@ var PostSchema = new Schema({
   
     content: { type: String, required: true },
     like: { type: Number },
-    comment: { type: Array },
+    comment: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     picture: { type: String, },
     linkvideo: { type: String, },
 },{ timestamps: true });
 var Post = mongoose.model('Post', PostSchema, 'Post');
 
-module.exports = Post; // this is what you want
+var CommentSchema = new Schema({
+    by: { type: Schema.Types.ObjectId, ref: 'User' },
+    content: { type: String, required: true },
+},{ timestamps: true });
+var Comment = mongoose.model('Comment', CommentSchema, 'Comment');
+
+module.exports = {
+    Post,
+    Comment
+}; // this is what you want

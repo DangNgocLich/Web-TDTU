@@ -3,23 +3,18 @@ const {
     addPostController,
     updatePostController,
     getPostByUserId,
-    deletePostController
+    deletePostController,
+    getPostController,
+    getPostByIDController
 } = require('../controllers/postController');
 var router = express.Router();
 
-const Post = require('../model/Post');
+const {Post} = require('../model/Post');
 
-router.get('/getPost', async function (req, res, next) {
-    const { page, limit } = req.body
-    res.status(200).json({
-        resultCode: 1,
-        data: await Post.find({}, null, { skip: page * limit }).populate({
-            path: "user",
-        }).limit(limit)
-    })
-});
+router.get('/getPost', getPostController);
 
 router.get('/getPost/:id', getPostByUserId);
+router.get('/getPostByID', getPostByIDController);
 router.post('/updatePost/:id', updatePostController);
 router.post('/addPost', addPostController);
 router.post('/deletePost/:id', deletePostController);

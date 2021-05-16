@@ -28,9 +28,14 @@ const httpServer = app.listen(port, (err) => {
     if (err) throw err
     console.log('> Server listening on port:', port)
 })
+
+
+
+const {Comment, Post} = require('./model/Post')
 const io = socketio(httpServer)
 io.on('connection', (socket) => {
     let addedUser = false;
+    console.log("Client connected")
 
     // when the client emits 'new message', this listens and executes
     socket.on('new message', (data) => {
@@ -39,6 +44,26 @@ io.on('connection', (socket) => {
             username: socket.username,
             message: data
         });
+    });
+
+    socket.on('onComment', (data) => {
+        const {postID, uid, content} = data
+        if(!(postID || uid || content)) return
+        Comment.create({by: uid, content}).then(comment => {
+            Post.findById(postID).then(post => {
+                post.comment.push(comment._id)
+                post.save().then(result => {
+                    io.emit("commentSuccess", {
+                        postID: postID
+                    })
+                })
+            })
+        })
+
+        // socket.broadcast.emit('new message', {
+        //     username: socket.username,
+        //     message: data
+        // });
     });
 })
 appNext.prepare()
