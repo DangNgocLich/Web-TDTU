@@ -7,13 +7,12 @@ var Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-  
     content: { type: String, required: true },
-    like: { type: Number },
+    like: { type: Number, default: 0 },
     comment: { type: Array },
     picture: { type: String, },
     linkvideo: { type: String, },
-},{ timestamps: true });
+}, { timestamps: true });
 var Post = mongoose.model('Post', PostSchema, 'Post');
 
 module.exports = Post; // this is what you want

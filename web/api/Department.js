@@ -1,7 +1,7 @@
 import { fetchAPI } from './constant'
-export const loginAPI = (input) => {
+export const getDepartmentAPI = (input) => {
   return fetchAPI({
-    url: "auth/login",
+    url: "public/getDepartment",
     method: "GET",
     body: input
   })
