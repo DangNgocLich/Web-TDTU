@@ -1,12 +1,12 @@
-import {fetchAPI} from './constant'
+import { fetchAPI } from './constant'
 export const loginAPI = (input) => {
   return fetchAPI({
     url: "auth/login",
     method: "POST",
     body: input
   })
-  .then(result => result)
-  .catch(err => ({resultCode: -1, message: "Không thế kết nối"}) )
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
 }
 
 export const regisAPI = (input) => {
@@ -15,8 +15,8 @@ export const regisAPI = (input) => {
     method: "POST",
     body: input
   })
-  .then(result => result)
-  .catch(err => ({resultCode: -1, message: "Không thế kết nối"}) )
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
 }
 
 export const getUsersAPI = (input) => {
@@ -25,8 +25,8 @@ export const getUsersAPI = (input) => {
     method: "GET",
     body: input
   })
-  .then(result => result)
-  .catch(err => ({resultCode: -1, message: "Không thế kết nối"}) )
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
 }
 export const getUsersByIdAPI = (input) => {
   return fetchAPI({
@@ -34,6 +34,6 @@ export const getUsersByIdAPI = (input) => {
     method: "POST",
     body: input
   })
-  .then(result => result)
-  .catch(err => ({resultCode: -1, message: "Không thế kết nối"}) )
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
 }

@@ -9,7 +9,6 @@ const loginController = async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     User.findOne({ 'username': username }, async function (err, user) {
-        console.log(user)
         if (!user)
             return res.status(400).json({
                 resultCode: -1,
@@ -19,8 +18,8 @@ const loginController = async (req, res) => {
         else {
             bcrypt.compare(password, user.password).then(async result => {
                 if (result) {
-                    accessToken = await generateToken(user, accessTokenSecret, "1d");
-                    return res.status(200).json({ resultCode: 1, accessToken, data: user });
+                    accessToken = await generateToken({ _id: user._id, role: user.role }, accessTokenSecret, "1d");
+                    return res.status(200).json({ resultCode: 1, accessToken });
                 } else
                     return res.status(400).json({ resultCode: -1, "message": "Tài khoản hoặc mật khẩu sai vui lòng kiểm tra" })
             })
@@ -30,7 +29,7 @@ const loginController = async (req, res) => {
 
 const regisController = async (req, res) => {
     const { username, password, displayName } = req.body
-    if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    if (!username || !password || !displayName || req.jwtDecoded.data.role !== "3") return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     return User.find({ username }).then(user => {
         if (user.length > 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Đã Tồn Tại" })
         bcrypt.hash(password, saltRounds).then(hash => { return User.create({ username, password: hash, displayName, role: "2" }).then(newUser => res.status(200).json({ resultCode: 1, "message": "Đăng Ký Thành Công" })) })
@@ -53,6 +52,7 @@ const getUserByIDController = async (req, res) => {
         return res.status(500).json({ resultCode: -1, "message": "Lỗi Sever" })
     })
 }
+
 
 
 const updateProfileController = async (req, res) => {
@@ -100,11 +100,21 @@ const checkToken = async (req, res) => {
     }
 }
 
+const getUserByToken = async (req, res) => {
+    const tokenFromClient = req.jwtDecoded
+    if (tokenFromClient) {
+        return res.status(200).json({ resultCode: 1, data: await User.findById(tokenFromClient.data.id), "message": "Lấy thành công" })
+    } else {
+        // Không tìm thấy token trong request
+        return res.status(400).json({ resultCode: -1, "message": "Thất bại" })
+    }
+}
 module.exports = {
     loginController,
     regisController,
     changepassWordController,
     updateProfileController,
     checkToken,
-    getUserByIDController
+    getUserByIDController,
+    getUserByToken
 }

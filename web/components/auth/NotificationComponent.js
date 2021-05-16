@@ -1,10 +1,12 @@
-import { Box, Button, Modal, TextField, TextareaAutosize } from '@material-ui/core'
+import { Button, Modal, TextField, TextareaAutosize } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { regisAPI } from '../../api/authAPI'
-import { verifyToken } from '../../../server/helpers/jwt.helper'
-import { accessTokenSecret } from '../../../server/middleware/AuthMiddleware'
-import { getUsersAPI, getUsersByIdAPI } from '../../api/authAPI'
+import {
+  addNotificationAPI,
+  deleteNotificationAPI,
+  getNotificationAPI,
+  getNotificationByDepartment,
+  updateNotificationAPI
+} from '../../api/notificaitionAPI'
 export default function HomeComponent({ router }) {
   const [title, settitle] = useState('')
   const [addnotification, setaddnotification] = useState(false)
@@ -40,13 +42,10 @@ export default function HomeComponent({ router }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            loginAPI({ title: title, content })
+            console.log({ title, content })
+            addNotificationAPI({ title, content })
               .then(result => {
-                if (result.resultCode === 1) {
-                  cookie.save('accessToken', result.accessToken)
-
-                  return router.push('/')
-                }
+               alert(result.message)
               })
           }}
           style={{
@@ -73,24 +72,22 @@ export default function HomeComponent({ router }) {
               label="title"
               placeholder="Enter title"
             />
+
             <TextareaAutosize
               style={{
-                width: "100%",
-                height:100
+                minHeight: 100,
+                padding: 16,
+                border: 1,
+
               }}
+              value={content}
+              onChange={(e) => setcontent(e.target.value)}
               rowsMax={4}
               aria-label="maximum height"
-            />
-            <TextField
-              value={content}
-              multiline
-              onChange={(e) => setcontent(e.target.value)}
-              style={{ marginBottom: 20 }}
               className='w-full'
               variant='outlined'
               label="content"
               placeholder="Enter content"
-              type='content'
             />
           </div>
 
