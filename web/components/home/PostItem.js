@@ -1,16 +1,20 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { FaceRounded, AddComment, ArrowRightSharp as CommentIcon } from '@material-ui/icons'
+import { getPostByIDAPI } from '../../api/postAPI'
 function PostItem(props) {
 
-  const { _id, user, createdAt, socket, comment: comments, content } = props
+  const { _id, user, createdAt, socket, content } = props
 
   const [comment, setComment] = useState('')
-
+  const [limitComment, setLimitComment] = useState(3)
+  const [comments, setComments] = useState(props.comment)
   const createDate = useCallback(() => new Date(createdAt), [createdAt])
 
   useEffect(() => {
-    console.log("Update", _id)
-  })
+    getPostByIDAPI({id: _id, limitComment}).then(result => {
+      if(result.resultCode == 1) return setComments(result.data.comment)
+    })
+  },[limitComment])
   return (
     <div className='bg-white p-2 rounded-sm mt-2 text-left'>
       <div className='flex pb-2 items-center'>
@@ -22,8 +26,30 @@ function PostItem(props) {
           <p className='text-sm text-gray-500'>{createDate().toDateString()}</p>
         </div>
       </div>
-      <div>
+      <div className="flex border-b-2">
         {content}
+      </div>
+      <div className='ml-4' >
+        {comments?.map(cm => {
+          return (
+            <div className="flex">
+              <FaceRounded
+                fontSize='large'
+              />
+              <div>
+                <p className = 'font-bold' >{cm.by.displayName}</p>
+                <p>{cm.content}</p>
+              </div>
+            </div>
+          )
+        })}
+        <button
+          onClick = {() => {
+            setLimitComment(limitComment+3)
+          }}
+        >
+          Xem thêm
+        </button>
       </div>
       <form className='flex'
         onSubmit={(e) => {
@@ -53,16 +79,6 @@ function PostItem(props) {
           />
         </button>
       </form>
-      {comments?.map(cm => {
-        return (
-          <div className="flex">
-            <FaceRounded
-              fontSize='large'
-            />
-            <p>{cm.content}</p>
-          </div>
-        )
-      })}
     </div>
   )
 }

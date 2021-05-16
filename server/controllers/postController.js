@@ -17,29 +17,30 @@ const addPostController = async (req, res) => {
     });
 }
 const getPostController = async function (req, res, next) {
-    const { page, limit } = req.body
+    const { page, limit, limitComment } = req.query
     res.status(200).json({
         resultCode: 1,
-        data: await Post.find({}, null, { skip: page * limit, limit: limit }).populate(['user',
-            { path: 'comment', options: { sort: { 'createdAt': -1 } } }])
+        data: await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit) }).populate(['user',
+            { path: 'comment', populate: 'by', limit: limitComment, options: { sort: { 'createdAt': -1 } } }])
     })
+    // , options: { sort: { 'createdAt': -1 } }
 }
 const getPostByIDController = async function (req, res, next) {
-    const { id } = req.query
+    const { id, limitComment } = req.query
     res.status(200).json({
         resultCode: 1,
-        data: await Post.findById(id).populate(['user', { path: 'comment', options: { sort: { 'createdAt': -1 } } }])
+        data: await Post.findById(id).populate(['user', { path: 'comment', populate: 'by', limit: limitComment, options: { sort: { 'createdAt': -1 } } }])
     })
 }
 const getPostByUserId = async (req, res) => {
     const id = req.params.id
-    const { page, limit } = req.query
+    const { page, limit, limitComment } = req.query
     try {
-        let data = await Post.find({}, null, { skip: parseInt(page * limit) })
+        let data = await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), options: { sort: { 'createdAt': -1 } } })
             .populate([{
                 path: "user",
                 match: { _id: { $eq: id } }
-            },{ path: 'comment', options: { sort: { 'createdAt': -1 } } }]).limit(parseInt(limit))
+            },{ path: 'comment', populate: 'by', limit: limitComment }]).limit(parseInt(limit))
         return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
     } catch (error) {
         return res.status(400).json({ resultCode: -1, "message": "Kiểm tra id" })

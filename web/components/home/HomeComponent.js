@@ -6,7 +6,7 @@ export default function HomeComponent({ router, socket }) {
 
   const [postData, setPostData] = useState([])
   
-  const getPosts = useCallback(() => getPostsAPI().then(result => {
+  const getPosts = useCallback(() => getPostsAPI({limit: 10}).then(result => {
     if(result.resultCode === 1) return setPostData(result.data)
     alert(result.message)
   }),[setPostData])
@@ -18,7 +18,7 @@ export default function HomeComponent({ router, socket }) {
   useEffect(() => {
     socket?.on("commentSuccess", data => {
       const {postID} = data;
-      getPostByIDAPI(postID).then(result => {
+      getPostByIDAPI({id: postID, limitComment: 3}).then(result => {
         const index = postData.findIndex(post => (post._id == postID))
         if(index != -1) postData[index] = result.data
         setPostData([...postData])
@@ -28,7 +28,7 @@ export default function HomeComponent({ router, socket }) {
   },[postData])
 
   return (
-    <div className='flex flex-col w-full items-center bg-gray-200'>
+    <div className='flex flex-col w-full h-full items-center bg-gray-200'>
       <div className = 'flex flex-col w-1/2 p-2' >
         <NewPost />
         {postData.map(post => {
