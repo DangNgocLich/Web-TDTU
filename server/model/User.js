@@ -14,7 +14,7 @@ var UserSchema = new Schema({
     faculty: { type: String, },
     department: [{type: Schema.Types.ObjectId, ref: 'Department'}],
     inNew: Boolean,
-});
+},{ timestamps: true });
 var User = mongoose.model('User', UserSchema, 'User');
 
 module.exports = User; // this is what you want
