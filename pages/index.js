@@ -1,8 +1,8 @@
-export default function Index(){
+import HomeComponent from "../web/components/auth/HomeComponent"
+
+export default function Index(props){
   return(
-    <div>
-      Homepage
-    </div>
+    <HomeComponent {...props} />
   )
 }
 

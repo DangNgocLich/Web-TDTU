@@ -1,17 +1,17 @@
-const Notification = require("../model/Notification");
+const Post = require("../model/Post");
 const bcrypt = require('bcrypt');
 
 const addNotifycationController = async(req, res) => {
-    const { title, content, department } = req.body
-    if (!title || !content || !department) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    const { userId, content } = req.body
+    if (!userId || !content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     let body = {}
     for (const key in req.body) {
         if (req.body[key]) {
             body[key] = req.body[key]
         }
     }
-    var notificaltion = new Notification(body)
-    notificaltion.save(function(err, notificaltion) {
+    var post = new Post(body)
+    post.save(function(err, post) {
         if (err) return console.error(err);
         res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" }, )
     });
