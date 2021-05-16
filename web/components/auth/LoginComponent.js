@@ -16,6 +16,7 @@ export default function LoginComponent({ router }) {
             .then(result => {
               if (result.resultCode === 1){
                 cookie.save('accessToken', result.accessToken)
+                
                 return router.push('/')
               }
             })

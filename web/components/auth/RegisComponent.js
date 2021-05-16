@@ -70,10 +70,6 @@ export default function RegisComponent({router}) {
         >
           Sign In
         </Button>
-        <a href='api/auth/google' className='flex justify-center items-center'>
-          <Image src='/icons/gmail_icon.png' layout='fixed' width='50' height='50' />
-          <p className='ml-2'>Login with Gmail</p>
-        </a>
       </form>
     </div>
   )

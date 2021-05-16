@@ -24,15 +24,24 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/api', route)
 
 app.get('*', (req, res) => {
-        return handle(req, res)
-    })
-    // const httpServer =
-app.listen(port, (err) => {
-        if (err) throw err
-        console.log('> Server listening on port:', port)
-    })
-    // const io = socketio(httpServer)
-    // io.on('connection', client => {
-    //         console.log(`Client ${client.id} has connected`)
-    //     })
-    // appNext.prepare()
+    return handle(req, res)
+})
+
+const httpServer = app.listen(port, (err) => {
+    if (err) throw err
+    console.log('> Server listening on port:', port)
+})
+const io = socketio(httpServer)
+io.on('connection', (socket) => {
+    let addedUser = false;
+
+    // when the client emits 'new message', this listens and executes
+    socket.on('new message', (data) => {
+        // we tell the client to execute 'new message'
+        socket.broadcast.emit('new message', {
+            username: socket.username,
+            message: data
+        });
+    });
+})
+appNext.prepare()

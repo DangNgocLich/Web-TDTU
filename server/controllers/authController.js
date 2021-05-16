@@ -4,29 +4,31 @@ const { generateToken } = require("../helpers/jwt.helper");
 const { accessTokenSecret } = require('../middleware/AuthMiddleware');
 const jwtHelper = require("../helpers/jwt.helper");
 const saltRounds = 10;
-const loginController = async(req, res) => {
+const loginController = async (req, res) => {
 
     const { username, password } = req.body
     if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
-    User.findOne({ 'username': username }, async function(err, user) {
+    User.findOne({ 'username': username }, async function (err, user) {
+        console.log(user)
         if (!user)
             return res.status(400).json({
                 resultCode: -1,
                 message: "Tài khoản không tồn tại vui lòng kiểm tra"
             })
+
         else {
             bcrypt.compare(password, user.password).then(async result => {
                 if (result) {
-                    accessToken = await generateToken(username, accessTokenSecret, "1d");
-                    return res.status(200).json({ resultCode: 1, accessToken });
+                    accessToken = await generateToken(user, accessTokenSecret, "1d");
+                    return res.status(200).json({ resultCode: 1, accessToken, data: user });
                 } else
                     return res.status(400).json({ resultCode: -1, "message": "Tài khoản hoặc mật khẩu sai vui lòng kiểm tra" })
             })
         }
-    })
+    }).select('+password')
 }
 
-const regisController = async(req, res) => {
+const regisController = async (req, res) => {
     const { username, password, displayName } = req.body
     if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     return User.find({ username }).then(user => {
@@ -38,7 +40,22 @@ const regisController = async(req, res) => {
     })
 }
 
-const updateProfileController = async(req, res) => {
+const getUserByIDController = async (req, res) => {
+
+    const { _id } = req.body
+    if (!_id) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    return User.findById(_id).populate('user', '-password').then(user => {
+
+        if (user.length < 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Không tồn tại" })
+        else return res.status(400).json({ resultCode: -1, "message": "Lấy User Thành công", data: user })
+    }).catch(err => {
+        console.log(err);
+        return res.status(500).json({ resultCode: -1, "message": "Lỗi Sever" })
+    })
+}
+
+
+const updateProfileController = async (req, res) => {
     const { username } = req.body
     let data = {}
     for (const key in req.body) {
@@ -48,11 +65,11 @@ const updateProfileController = async(req, res) => {
     }
     if (!username) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     await User.findOneAndUpdate({ username: username }, data)
-    return res.status(200).json({ resultCode: 1, "message": "Cập Nhập thành công" }, )
+    return res.status(200).json({ resultCode: 1, "message": "Cập Nhập thành công" },)
 }
 
 
-const changepassWordController = async(req, res) => {
+const changepassWordController = async (req, res) => {
     const { username, password } = req.body
     console.log(username, password)
     if (!username || !password) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
@@ -60,7 +77,7 @@ const changepassWordController = async(req, res) => {
     return res.status(200).json({ resultCode: 1, "message": "Đổi Mật khẩu thành công" })
 }
 
-const checkToken = async(req, res) => {
+const checkToken = async (req, res) => {
     const tokenFromClient = req.body.token
     if (tokenFromClient) {
         // Nếu tồn tại token
@@ -71,7 +88,7 @@ const checkToken = async(req, res) => {
             // Nếu token hợp lệ, lưu thông tin giải mã được vào đối tượng req, dùng cho các xử lý ở phía sau.
             req.jwtDecoded = decoded;
             return res.status(200).json({ resultCode: 1, })
-                // Cho phép req đi tiếp sang controller.
+            // Cho phép req đi tiếp sang controller.
         } catch (error) {
             // Nếu giải mã gặp lỗi: Không đúng, hết hạn...etc:
             // Lưu ý trong dự án thực tế hãy bỏ dòng debug bên dưới, mình để đây để debug lỗi cho các bạn xem thôi
@@ -88,5 +105,6 @@ module.exports = {
     regisController,
     changepassWordController,
     updateProfileController,
-    checkToken
+    checkToken,
+    getUserByIDController
 }
