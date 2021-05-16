@@ -1,22 +1,26 @@
+import { verifyToken } from "../server/helpers/jwt.helper";
+import { accessTokenSecret } from "../server/middleware/AuthMiddleware";
 import LoginComponent from "../web/components/auth/LoginComponent";
 
 export default function LoginPage(props) {
   return (
     <LoginComponent {...props} />
   )
-} export async function getServerSideProps({ req, res }) {
+} 
+
+export async function getServerSideProps({ req, res }) {
   const { cookies } = req
-  if (cookies.accessToken) {
+  return verifyToken(cookies.accessToken, accessTokenSecret).then(result => {
     return {
       redirect: {
         destination: '/',
         permanent: false,
-      },
+      }
     }
-  }
-  return {
-    props: {
-
-    }, // will be passed to the page component as props
-  }
+  }).catch(err => {
+    return {
+      props: {
+      }
+    }
+  })
 }
