@@ -11,6 +11,9 @@ module.exports = {
         '8/10': '80%',
         '9/10': '90%'
       },
+      minWidth: {
+        '72':'250'
+      },
       colors: {
         white: 'white'
       }

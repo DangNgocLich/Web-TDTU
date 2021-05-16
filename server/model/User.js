@@ -12,6 +12,7 @@ var UserSchema = new Schema({
     picture: { type: String, },
     className: { type: String, },
     faculty: { type: String, },
+    department: [{type: Schema.Types.ObjectId, ref: 'Department'}],
     inNew: Boolean,
 });
 var User = mongoose.model('User', UserSchema, 'User');

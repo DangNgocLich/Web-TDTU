@@ -14,12 +14,11 @@ export default function LoginComponent({ router }) {
           e.preventDefault();
           loginAPI({ username: email, password })
             .then(result => {
-              console.log(result)
               if (result.resultCode === 1){
                 cookie.save('accessToken', result.accessToken)
-                
                 return router.push('/')
               }
+              alert(result.message)
             })
         }}
         className='flex flex-col w-full md:w-96 bg-white rounded-xl p-12'>
