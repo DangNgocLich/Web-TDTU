@@ -44,4 +44,4 @@ io.on('connection', (socket) => {
         });
     });
 })
-// appNext.prepare()
+appNext.prepare()
