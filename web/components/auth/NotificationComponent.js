@@ -7,13 +7,17 @@ import {
   getNotificationByDepartment,
   updateNotificationAPI
 } from '../../api/notificaitionAPI'
+import {
+  getDepartmentAPI
+} from '../../api/department'
 export default function HomeComponent({ router }) {
   const [title, settitle] = useState('')
   const [addnotification, setaddnotification] = useState(false)
   const [content, setcontent] = useState('')
-  useEffect(() => {
-
-  })
+  const [department, setdepartment] = useState([])
+  // useEffect(() => {
+  //   getDepartmentAPI().then(result => result.resultCode && setdepartment(result.data))
+  // }, [department])
   const handleOpen = () => {
     setaddnotification(true)
   }
@@ -45,7 +49,7 @@ export default function HomeComponent({ router }) {
             console.log({ title, content })
             addNotificationAPI({ title, content })
               .then(result => {
-               alert(result.message)
+                alert(result.message)
               })
           }}
           style={{

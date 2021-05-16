@@ -7,13 +7,12 @@ var Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-  
     content: { type: String, required: true },
     like: { type: Number },
     comment: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     picture: { type: String, },
     linkvideo: { type: String, },
-},{ timestamps: true });
+}, { timestamps: true });
 var Post = mongoose.model('Post', PostSchema, 'Post');
 
 var CommentSchema = new Schema({

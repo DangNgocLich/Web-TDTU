@@ -13,7 +13,6 @@ const {Post} = require('../model/Post');
 
 router.get('/getPost', getPostController);
 
-router.get('/getPost/:id', getPostByUserId);
 router.get('/getPostByID', getPostByIDController);
 router.post('/updatePost/:id', updatePostController);
 router.post('/addPost', addPostController);
