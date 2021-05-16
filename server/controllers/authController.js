@@ -29,7 +29,7 @@ const loginController = async (req, res) => {
 
 const regisController = async (req, res) => {
     const { username, password, displayName } = req.body
-    if (!username || !password || !displayName) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    if (!username || !password || !displayName || req.jwtDecoded.data.role !== "3") return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     return User.find({ username }).then(user => {
         if (user.length > 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Đã Tồn Tại" })
         bcrypt.hash(password, saltRounds).then(hash => { return User.create({ username, password: hash, displayName, role: "2" }).then(newUser => res.status(200).json({ resultCode: 1, "message": "Đăng Ký Thành Công" })) })
@@ -101,24 +101,12 @@ const checkToken = async (req, res) => {
 }
 
 const getUserByToken = async (req, res) => {
-    const tokenFromClient = req.body.token
+    const tokenFromClient = req.jwtDecoded
     if (tokenFromClient) {
-        // Nếu tồn tại token
-        try {
-            // Thực hiện giải mã token xem có hợp lệ hay không?
-            const decoded = await jwtHelper.verifyToken(tokenFromClient, accessTokenSecret);
-
-            return res.status(200).json({ resultCode: 1, data: await User.findById(decoded.data.id) })
-            // Cho phép req đi tiếp sang controller.
-        } catch (error) {
-            console.log(error)
-            // Nếu giải mã gặp lỗi: Không đúng, hết hạn...etc:
-            // Lưu ý trong dự án thực tế hãy bỏ dòng debug bên dưới, mình để đây để debug lỗi cho các bạn xem thôi
-            return res.status(400).json({ resultCode: -1, })
-        }
+        return res.status(200).json({ resultCode: 1, data: await User.findById(tokenFromClient.data.id), "message": "Lấy thành công" })
     } else {
         // Không tìm thấy token trong request
-        return res.status(400).json({ resultCode: -1, })
+        return res.status(400).json({ resultCode: -1, "message": "Thất bại" })
     }
 }
 module.exports = {
