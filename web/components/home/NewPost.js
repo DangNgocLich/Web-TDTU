@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FaceRounded, AddComment } from '@material-ui/icons'
+import { addPostAPI } from '../../api/postAPI'
 export default function NewPost({ router }) {
 
   const [content, setContent] = useState('')
@@ -12,7 +13,7 @@ export default function NewPost({ router }) {
         <FaceRounded
           fontSize = 'large'
         />
-        <input
+        <textarea
           value = {content}
           onChange = {(e) => setContent(e.target.value)}
           type='text'border-b-2
@@ -22,6 +23,15 @@ export default function NewPost({ router }) {
       </div>
       <button
         className = 'text-gray-700 p-2 focus:outline-none hover:bg-gray-200 rounded-xl'
+        onClick = {() => {
+          addPostAPI({
+            content
+          }).then(result => {
+            if(result.resultCode == 1) return alert("Đăng bài thành công")
+            alert(result.message)
+          })
+          setContent('')
+        }}
       >
         <AddComment 
           htmlColor = 'green'
