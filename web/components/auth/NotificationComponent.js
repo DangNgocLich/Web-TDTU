@@ -60,7 +60,8 @@ export default function HomeComponent({ router, cookies }) {
         background: "red",
         maxWidth: "90%"
       }} className='flex flex-col w-full  bg-white  p-12'>
-        <InputLabel style={{
+        <InputLabel 
+        style={{
           fontSize: 32,
           color: "red"
         }} id="demo-simple-select-helper-label">Title</InputLabel>
@@ -75,7 +76,8 @@ export default function HomeComponent({ router, cookies }) {
               // fontSize: 20,
               marginLeft: 20,
               width: "100%",
-            }}>
+            }}
+            >
             noi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dung
             </InputLabel>
         </div>
