@@ -28,11 +28,11 @@ const loginController = async (req, res) => {
 }
 
 const regisController = async (req, res) => {
-    const { username, password, displayName } = req.body
+    const { username, password, displayName, department } = req.body
     if (!username || !password || !displayName || req.jwtDecoded.data.role !== "3") return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     return User.find({ username }).then(user => {
         if (user.length > 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Đã Tồn Tại" })
-        bcrypt.hash(password, saltRounds).then(hash => { return User.create({ username, password: hash, displayName, role: "2" }).then(newUser => res.status(200).json({ resultCode: 1, "message": "Đăng Ký Thành Công" })) })
+        bcrypt.hash(password, saltRounds).then(hash => { return User.create({ username, password: hash, displayName, role: "2", department }).then(newUser => res.status(200).json({ resultCode: 1, "message": "Đăng Ký Thành Công" })) })
     }).catch(err => {
         console.log(err);
         return res.status(500).json({ resultCode: -1, "message": "Lỗi Sever" })
@@ -46,13 +46,21 @@ const getUserByIDController = async (req, res) => {
     return User.findById(_id).populate('user', '-password').then(user => {
 
         if (user.length < 0) return res.status(400).json({ resultCode: -1, "message": "Tài Khoản Không tồn tại" })
-        else return res.status(400).json({ resultCode: -1, "message": "Lấy User Thành công", data: user })
+        else return res.status(400).json({ resultCode: 1, "message": "Lấy User Thành công", data: user })
     }).catch(err => {
         console.log(err);
         return res.status(500).json({ resultCode: -1, "message": "Lỗi Sever" })
     })
 }
-
+const getDepartmentUserByIDController = async (req, res) => {
+    const tokenFromClient = req.jwtDecoded
+    if (tokenFromClient) {
+        return res.status(200).json({ resultCode: 1, data: await User.findById(tokenFromClient.data.id, "department").populate({ path: "department" }), "message": "Lấy thành công" })
+    } else {
+        // Không tìm thấy token trong request
+        return res.status(400).json({ resultCode: -1, "message": "Thất bại" })
+    }
+}
 
 
 const updateProfileController = async (req, res) => {
@@ -116,5 +124,6 @@ module.exports = {
     updateProfileController,
     checkToken,
     getUserByIDController,
-    getUserByToken
+    getUserByToken,
+    getDepartmentUserByIDController
 }

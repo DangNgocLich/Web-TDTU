@@ -12,7 +12,8 @@ const {
     updateProfileController,
     checkToken,
     getUserByIDController,
-    getUserByToken
+    getUserByToken,
+    getDepartmentUserByIDController
 } = require('../controllers/authController');
 const AuthMiddleware = require('../middleware/AuthMiddleware');
 
@@ -30,12 +31,13 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 router.post('/login', loginController)
 router.use(AuthMiddleware.isAuth);
 router.get('/getUser', async function (req, res) {
-    res.status(200).json({ resultCode: -1, "message": "Lấy User Thành công", data: await User.find({}) })
+    res.status(200).json({ resultCode: -1, "message": "Lấy User Thành công", data: await User.find({}).populate({ path: "department" }) })
 })
 router.post('/register', regisController)
 router.post('/updateProfile', updateProfileController)
 router.post('/changepassword', changepassWordController)
 router.post('/checkToken', checkToken)
 router.get('/getUserByToken', getUserByToken)
+router.get('/getDepartmentUserByID', getDepartmentUserByIDController)
 router.post('/getUserByID', getUserByIDController)
 module.exports = router

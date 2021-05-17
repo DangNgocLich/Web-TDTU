@@ -9,7 +9,7 @@ const menu = [
     child: [
       {
         title: "Tất cả",
-        onClick: (router) => router.push('/tatcathongbao')
+        onClick: (router) => router.push('/allnotification')
       },
       {
         title: "Phòng Ban",

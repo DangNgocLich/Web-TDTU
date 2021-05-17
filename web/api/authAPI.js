@@ -21,8 +21,8 @@ export const regisAPI = (input) => {
 
 export const getUsersAPI = (input) => {
   return fetchAPI({
-    url: "auth/register",
-    method: "GET",
+    url: "auth/getUser",
+    method: "POST",
     body: input
   })
     .then(result => result)
@@ -30,8 +30,17 @@ export const getUsersAPI = (input) => {
 }
 export const getUsersByIdAPI = (input) => {
   return fetchAPI({
-    url: "auth/register",
+    url: "auth/getUserByID",
     method: "POST",
+    body: input
+  })
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
+}
+export const getDepartmentUserByID = (input) => {
+  return fetchAPI({
+    url: "auth/getDepartmentUserByID",
+    method: "GET",
     body: input
   })
     .then(result => result)

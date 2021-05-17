@@ -3,7 +3,9 @@ const {
     addNotifycationController,
     getNotificationById,
     updateNotifycationController,
-    deleteNotifycationController
+    deleteNotifycationController,
+    getLengthNotification,
+    getLengthNotificationById
 } = require('../controllers/notifycationController');
 var router = express.Router();
 
@@ -17,6 +19,8 @@ router.get('/getNotification', async function(req, res, next) {
 });
 
 router.get('/getNotificationByDepartment/:id', getNotificationById);
+router.get('/getLengthNotification', getLengthNotification);
+router.get('/getLengthNotification/:id', getLengthNotificationById);
 router.post('/updateNotification/:id', updateNotifycationController);
 router.post('/addNotification', addNotifycationController);
 router.post('/deleteNotification/:id', deleteNotifycationController);
