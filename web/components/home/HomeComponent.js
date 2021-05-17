@@ -6,8 +6,8 @@ export default function HomeComponent({ router, socket }) {
 
   const [postData, setPostData] = useState([])
   
-  const getPosts = useCallback(() => getPostsAPI({limit: 10}).then(result => {
-    if(result.resultCode === 1) return setPostData(result.data)
+  const getPosts = useCallback(() => getPostsAPI({limit: 1000}).then(result => {
+    if(result.resultCode === 1) return setPostData(result.data?.map(post => ({...post, reload: false})))
     alert(result.message)
   }),[setPostData])
 
@@ -16,11 +16,12 @@ export default function HomeComponent({ router, socket }) {
   },[])
 
   useEffect(() => {
+    socket?.off('commentSuccess');
     socket?.on("commentSuccess", data => {
       const {postID} = data;
       getPostByIDAPI({id: postID, limitComment: 3}).then(result => {
         const index = postData.findIndex(post => (post._id == postID))
-        if(index != -1) postData[index] = result.data
+        if(index != -1) postData[index].reload = !postData[index].reload
         setPostData([...postData])
       })
       // 
@@ -28,12 +29,12 @@ export default function HomeComponent({ router, socket }) {
   },[postData])
 
   return (
-    <div className='flex flex-col w-full h-full items-center bg-gray-200'>
+    <div className='flex flex-col w-full overflow-y-scroll items-center bg-gray-200'>
       <div className = 'flex flex-col w-1/2 p-2' >
         <NewPost />
         {postData.map(post => {
           return(
-            <PostItem key = {post._id} {...post} socket = {socket} />
+            <PostItem key = {post._id} {...post} reload = {post.reload} socket = {socket} />
           )
         })}
       </div>

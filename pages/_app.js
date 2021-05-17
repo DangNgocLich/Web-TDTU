@@ -28,12 +28,12 @@ class MainApp extends App {
     return (
       <div className='flex'>
         <Head>
-          <link rel="icon" type="image/png" href={'public/favicon.png'} />
+          <link rel="icon" type="image/png" href={'favicon.png'} />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
         </Head>
         <NextNprogress />
         {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <LeftBar router = {router} />}
-        <div className='flex w-full flex-col'>
+        <div className='flex w-full h-screen flex-col'>
           {excludeLeftBar.indexOf(router.pathname) != -1 ? null : <Header router = {router}/>}
           <Component router={router} socket = {this.state.socket} />
         </div>

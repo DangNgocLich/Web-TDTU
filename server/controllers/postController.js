@@ -2,17 +2,12 @@ const { Post } = require("../model/Post");
 const bcrypt = require('bcrypt');
 
 const addPostController = async (req, res) => {
-    const { user, content } = req.body
-    if (!user || !content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
-    let body = {}
-    for (const key in req.body) {
-        if (req.body[key]) {
-            body[key] = req.body[key]
-        }
-    }
-    var post = new Post(body)
-    post.save(function (err, post) {
-        if (err) return console.error(err);
+    const { content } = req.body
+    const uid = req.jwtDecoded.data.id
+    if (!content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
+    var post = new Post({user: uid, content})
+    return post.save(function (err, post) {
+        if (err) return res.status(500).json({ resultCode: 1, "message": "Lỗi server" },);
         res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" },)
     });
 }
@@ -20,7 +15,7 @@ const getPostController = async function (req, res, next) {
     const { page, limit, limitComment } = req.query
     res.status(200).json({
         resultCode: 1,
-        data: await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit) }).populate(['user',
+        data: await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), sort: { 'createdAt': -1 } }).populate(['user',
             { path: 'comment', populate: 'by', limit: limitComment, options: { sort: { 'createdAt': -1 } } }])
     })
     // , options: { sort: { 'createdAt': -1 } }
@@ -36,7 +31,7 @@ const getPostByUserId = async (req, res) => {
     const id = req.params.id
     const { page, limit, limitComment } = req.query
     try {
-        let data = await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), options: { sort: { 'createdAt': -1 } } })
+        let data = await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), sort: { 'createdAt': -1 } } )
             .populate([{
                 path: "user",
                 match: { _id: { $eq: id } }
