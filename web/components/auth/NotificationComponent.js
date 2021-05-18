@@ -16,7 +16,7 @@ export default function HomeComponent({ router, cookies }) {
   const [content, setcontent] = useState('')
   const [department, setdepartment] = useState([])
   const [selectdepartment, setselectdepartment] = useState()
-  const [notification, setnotification] = useState()
+  const [notification, setNotification] = useState()
   const [page, setPage] = useState(0)
   const [length, setlength] = useState(1)
   useEffect(() => {
@@ -36,60 +36,147 @@ export default function HomeComponent({ router, cookies }) {
 
   useEffect(() => {
     getNotificationAPI({ limit: 10, page }).then(result => {
-      console.log(result)
       if (result.resultCode === 1) {
-        setnotification(result.data)
+        setNotification(result.data)
       }
     })
   }, [page])
 
-  return (
+  const limitText = (text) => {
 
+    if (text.length > 80) {
+      text = text.substr(0, 80) + '...';
+    }
+    return text;
+  }
+  console.log(notification)
+  return (
     <div className='flex flex-col h-screen items-center '>
       <Pagination style={{
         marginTop: 20
       }} count={Math.ceil(length / 10)} showFirstButton showLastButton onChange={(event, value) => {
-        console.log(value)
         setPage(parseInt(value) - 1);
       }} />
+      {/* {notification?.map((item) =>
+        )} */}
       <div style={{
         borderLeft: 1,
         borderLeftStyle: "solid",
-
-        // marginRight: 20,
-        background: "red",
-        maxWidth: "90%"
-      }} className='flex flex-col w-full  bg-white  p-12'>
-        <InputLabel 
-        style={{
-          fontSize: 32,
-          color: "red"
-        }} id="demo-simple-select-helper-label">Title</InputLabel>
-        <div style={{
-          alignItems: "stretch",
-          overflow: "hidden",
-          width:"10%"
-        }}>
-          <InputLabel
-            maxLength="12"
-            style={{
-              // fontSize: 20,
-              marginLeft: 20,
-              width: "100%",
-            }}
-            >
-            noi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dungnoi dung
-            </InputLabel>
-        </div>
-
+        maxWidth: "95%",
+        marginLeft: 50,
+        justifyContent: "flex-start",
+        marginBottom: 20
+      }} className='flex flex-col w-full  bg-white  p-6'>
         <InputLabel
-          margin="dense"
           style={{
-            // fontSize: 20,
-            margin: 20,
-            textAlign: "right"
+            fontSize: 25,
+            color: "blue"
+          }} id="demo-simple-select-helper-label">Title</InputLabel>
+        <p>
+          {limitText("noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung")}
+        </p>
+        <a href="" style={{
+          color: "blue"
+        }}>Chi tiết thông báo</a>
+        <div className='text-right' style={{
+
+        }}>
+          <p style={{
+            fontStyle: "italic",
+            textAlign: 'right'
           }}
-          id="demo-simple-select-helper-label">noi dung</InputLabel>
+            className='text-gray-500'>{notification && notification[0].department.label} | Ngày Đăng {notification && new Date(notification[0].createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+          </p>
+        </div>
+      </div>
+      <div style={{
+        borderLeft: 1,
+        borderLeftStyle: "solid",
+        maxWidth: "95%",
+        marginLeft: 50,
+        justifyContent: "flex-start",
+        marginBottom: 20
+      }} className='flex flex-col w-full  bg-white  p-6'>
+        <InputLabel
+          style={{
+            fontSize: 25,
+            color: "blue"
+          }} id="demo-simple-select-helper-label">Title</InputLabel>
+        <p>
+          {limitText("noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung")}
+        </p>
+        <a href="" style={{
+          color: "blue"
+        }}>Chi tiết thông báo</a>
+        <div className='text-right' style={{
+
+        }}>
+          <p style={{
+            fontStyle: "italic",
+            textAlign: 'right'
+          }}
+            className='text-gray-500'>{notification && notification[0].department.label} | Ngày Đăng {notification && new Date(notification[0].createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+          </p>
+        </div>
+      </div>
+      <div style={{
+        borderLeft: 1,
+        borderLeftStyle: "solid",
+        maxWidth: "95%",
+        marginLeft: 50,
+        justifyContent: "flex-start",
+        marginBottom: 20
+      }} className='flex flex-col w-full  bg-white  p-6'>
+        <InputLabel
+          style={{
+            fontSize: 25,
+            color: "blue"
+          }} id="demo-simple-select-helper-label">Title</InputLabel>
+        <p>
+          {limitText("noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung")}
+        </p>
+        <a href="" style={{
+          color: "blue"
+        }}>Chi tiết thông báo</a>
+        <div className='text-right' style={{
+
+        }}>
+          <p style={{
+            fontStyle: "italic",
+            textAlign: 'right'
+          }}
+            className='text-gray-500'>{notification && notification[0].department.label} | Ngày Đăng {notification && new Date(notification[0].createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+          </p>
+        </div>
+      </div> <div style={{
+        borderLeft: 1,
+        borderLeftStyle: "solid",
+        maxWidth: "95%",
+        marginLeft: 50,
+        justifyContent: "flex-start",
+        marginBottom: 20
+      }} className='flex flex-col w-full  bg-white  p-6'>
+        <InputLabel
+          style={{
+            fontSize: 25,
+            color: "blue"
+          }} id="demo-simple-select-helper-label">Title</InputLabel>
+        <p>
+          {limitText("noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung noi dung")}
+        </p>
+        <a href="" style={{
+          color: "blue"
+        }}>Chi tiết thông báo</a>
+        <div className='text-right' style={{
+
+        }}>
+          <p style={{
+            fontStyle: "italic",
+            textAlign: 'right'
+          }}
+            className='text-gray-500'>{notification && notification[0].department.label} | Ngày Đăng {notification && new Date(notification[0].createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+          </p>
+        </div>
       </div>
       {/* <button type="button" onClick={() => setaddnotification(true)}>
         Open Modal</button>
