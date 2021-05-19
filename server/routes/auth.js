@@ -22,7 +22,7 @@ router.use(passport.initialize());
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/register' }),
     async function (req, res) {
-        const token = await generateToken(req.user, accessTokenSecret, '1d')
+        const token = await generateToken(req.user, accessTokenSecret, '30d')
         res.cookie('accessToken', token, { maxAge: 900000, httpOnly: true })
         res.redirect('/');
     }

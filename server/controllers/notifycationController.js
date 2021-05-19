@@ -13,7 +13,7 @@ const addNotifycationController = async (req, res) => {
     var notificaltion = new Notification(body)
     notificaltion.save(function (err, notificaltion) {
         if (err) return console.error(err);
-        res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" },)
+        res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công", data: notificaltion._id },)
     });
 }
 const getNotificationById = async (req, res) => {
