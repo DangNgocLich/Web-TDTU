@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-const { accessTokenSecret } = require('../middleware/AuthMiddleware');
 const { generateToken } = require('../helpers/jwt.helper');
 const User = require('../model/User');
-
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "lichbmtlqd@gmail.com";
 const {
     loginController,
     regisController,
@@ -22,8 +21,9 @@ router.use(passport.initialize());
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/register' }),
     async function (req, res) {
-        const token = await generateToken(req.user, accessTokenSecret, '30d')
-        res.cookie('accessToken', token, { maxAge: 900000, httpOnly: true })
+        const token = await generateToken(req.user, accessTokenSecret, '1d')
+        res.cookie('accessToken', token)
+        res.cookie('uid', req.user.id)
         res.redirect('/');
     }
 );

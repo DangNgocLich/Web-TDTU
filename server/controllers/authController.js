@@ -19,6 +19,8 @@ const loginController = async (req, res) => {
             bcrypt.compare(password, user.password).then(async result => {
                 if (result) {
                     accessToken = await generateToken({ _id: user._id, role: user.role }, accessTokenSecret, "1d");
+                    res.cookie('accessToken', accessToken)
+                    res.cookie('uid', user.id)
                     return res.status(200).json({ resultCode: 1, accessToken });
                 } else
                     return res.status(400).json({ resultCode: -1, "message": "Tài khoản hoặc mật khẩu sai vui lòng kiểm tra" })

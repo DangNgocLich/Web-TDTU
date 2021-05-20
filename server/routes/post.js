@@ -5,7 +5,8 @@ const {
     getPostByUserId,
     deletePostController,
     getPostController,
-    getPostByIDController
+    getPostByIDController,
+    deleteCommentController
 } = require('../controllers/postController');
 var router = express.Router();
 
@@ -17,4 +18,5 @@ router.get('/getPostByID', getPostByIDController);
 router.post('/updatePost/:id', updatePostController);
 router.post('/addPost', addPostController);
 router.post('/deletePost/:id', deletePostController);
+router.post('/deleteComment', deleteCommentController);
 module.exports = router;

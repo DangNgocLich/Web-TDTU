@@ -17,6 +17,7 @@ var Post = mongoose.model('Post', PostSchema, 'Post');
 
 var CommentSchema = new Schema({
     by: { type: Schema.Types.ObjectId, ref: 'User' },
+    postID: { type: Schema.Types.ObjectId, ref: 'Post' },
     content: { type: String, required: true },
 },{ timestamps: true });
 var Comment = mongoose.model('Comment', CommentSchema, 'Comment');

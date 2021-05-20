@@ -5,7 +5,7 @@ const path = require('path');
 const cors = require('cors');
 const socketio = require('socket.io')
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 const dev = process.env.NODE_ENV !== 'production'
 const appNext = next({ dev })
 const handle = appNext.getRequestHandler()
@@ -48,8 +48,8 @@ io.on('connection', (socket) => {
 
     socket.on('onComment', (data) => {
         const { postID, uid, content } = data
-        if (!(postID || uid || content)) return
-        Comment.create({ by: uid, content }).then(comment => {
+        if (!postID || !uid || !content) return
+        Comment.create({ by: uid, content, postID }).then(comment => {
             Post.findById(postID).then(post => {
                 post.comment.push(comment._id)
                 post.save().then(result => {
@@ -72,6 +72,9 @@ io.on('connection', (socket) => {
             }))
 
     });
-
 })
 appNext.prepare()
+
+module.exports = {
+    io
+}

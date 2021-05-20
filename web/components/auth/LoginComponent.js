@@ -15,7 +15,6 @@ export default function LoginComponent({ router }) {
           loginAPI({ username: email, password })
             .then(result => {
               if (result.resultCode === 1){
-                cookie.save('accessToken', result.accessToken)
                 return router.push('/')
               }
               alert(result.message)

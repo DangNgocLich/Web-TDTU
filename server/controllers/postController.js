@@ -1,14 +1,16 @@
-const { Post } = require("../model/Post");
+const { Post, Comment } = require("../model/Post");
 const bcrypt = require('bcrypt');
-
 const addPostController = async (req, res) => {
     const { content } = req.body
     const uid = req.jwtDecoded.data.id
     if (!content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
-    var post = new Post({user: uid, content})
+    var post = new Post({ user: uid, content })
     return post.save(function (err, post) {
-        if (err) return res.status(500).json({ resultCode: 1, "message": "Lỗi server" },);
-        res.status(200).json({ resultCode: 1, "message": "Đăng Nội Dung thành công" },)
+        if (err) return res.status(500).json({ resultCode: 1, "message": "Lỗi server" });
+        post.populate('user', (err, newPost) => {
+            if (err) return res.status(500).json({ resultCode: 1, "message": "Lỗi server" });
+            return res.status(200).json({ resultCode: 1, "message": "Đăng nội dung thành công", data: newPost })
+        })
     });
 }
 const getPostController = async function (req, res, next) {
@@ -31,11 +33,11 @@ const getPostByUserId = async (req, res) => {
     const id = req.params.id
     const { page, limit, limitComment } = req.query
     try {
-        let data = await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), sort: { 'createdAt': -1 } } )
+        let data = await Post.find({}, null, { skip: Number(page) * Number(limit), limit: Number(limit), sort: { 'createdAt': -1 } })
             .populate([{
                 path: "user",
                 match: { _id: { $eq: id } }
-            },{ path: 'comment', populate: 'by', limit: limitComment }]).limit(parseInt(limit))
+            }, { path: 'comment', populate: 'by', limit: limitComment }]).limit(parseInt(limit))
         return res.status(200).json({ resultCode: 1, data: data.filter((x) => x.department !== null) })
     } catch (error) {
         return res.status(400).json({ resultCode: -1, "message": "Kiểm tra id" })
@@ -60,11 +62,27 @@ const deletePostController = async (req, res) => {
     return res.status(200).json({ resultCode: 1, "message": "Xóa thành công" },)
 }
 
+const deleteCommentController = async (req, res) => {
+    const uid = req.params.id
+    const { id } = req.body
+    Comment.findByIdAndDelete({ _id: id, by: uid }).then(comment => {
+        if (comment) {
+            const {io} = require('../app')
+            io.emit("onCommentDelete", {
+                postID: comment.postID
+            })
+            return res.status(200).json({ resultCode: 1, "message": "Xóa thành công" })
+        }
+        return res.status(200).json({ resultCode: -1, "message": "Không thể xóa" })
+    })
+}
+
 module.exports = {
     addPostController,
     updatePostController,
     getPostByUserId,
     deletePostController,
     getPostController,
-    getPostByIDController
+    getPostByIDController,
+    deleteCommentController
 }

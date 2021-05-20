@@ -4,8 +4,8 @@
   "description": "",
   "main": "server/app.js",
   "scripts": {
-    "start": "nodemon server/app.js",
-    "build:web": "next build",
+    "start": "node server/app.js",
+    "build": "next build",
     "start:web": "next start",
     "dev:web": "next"
   },

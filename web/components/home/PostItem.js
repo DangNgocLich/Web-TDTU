@@ -1,6 +1,10 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import { FaceRounded, AddComment, ArrowRightSharp as CommentIcon } from '@material-ui/icons'
-import { getPostByIDAPI } from '../../api/postAPI'
+import { FaceRounded, MoreHoriz } from '@material-ui/icons'
+import { deleteCommentAPI, getPostByIDAPI } from '../../api/postAPI'
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import cookie from 'react-cookies'
 function PostItem(props) {
 
   const { _id, user, createdAt, socket, content, reload } = props
@@ -33,7 +37,7 @@ function PostItem(props) {
         </div>
       </div>
       <div className="flex border-b-2 text-gray-800">
-        {content}
+        <p className = 'whitespace-pre-line' aria-multiline = {true}>{content}</p>
       </div>
       <div className='ml-4 mb-2' >
         {comments?.map(cm => {
@@ -47,11 +51,7 @@ function PostItem(props) {
                   className = 'flex'
                 >
                   <p className='font-medium flex-1' >{cm.by.displayName}</p>
-                  <button
-                    className = 'font-bold text-gray-700'
-                  >
-                    ...
-                  </button>
+                  <CommentOption cmID = {cm._id} />
                 </div>
                 <p className='text-gray-700'>{cm.content}</p>
               </div>
@@ -70,9 +70,11 @@ function PostItem(props) {
       <form className='flex'
         onSubmit={(e) => {
           e.preventDefault()
+          if(!comment) return
+          console.log(cookie.load('uid', true))
           socket.emit("onComment", {
             postID: _id,
-            uid: user._id,
+            uid: cookie.load('uid', true),
             content: comment
           })
           setComment('')
@@ -93,5 +95,50 @@ function PostItem(props) {
     </div>
   )
 }
+
+const CommentOption = memo(({cmID}) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEdit = () => {
+    handleClose()
+    alert("This fuction is on proccess")
+  }
+  
+  const handleDelete = () => {
+    handleClose()
+    deleteCommentAPI({id: cmID}).then(result => {
+      if(result.resultCode !== 1) alert(result.message)
+    })
+  }
+
+  return (
+    <div>
+      <Button
+        className = 'focus:outline-none'
+        aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}
+      >
+        <MoreHoriz fontSize = 'small' />
+      </Button>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
+      </Menu>
+    </div>
+  );
+})
 
 export default memo(PostItem)
