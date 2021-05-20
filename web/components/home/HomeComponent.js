@@ -30,7 +30,7 @@ export default function HomeComponent({ router, socket }) {
 
   return (
     <div className='flex flex-col w-full overflow-y-scroll items-center bg-gray-200'>
-      <div className = 'flex flex-col w-1/2 p-2' >
+      <div className = 'flex w-96 md:w-1/2 flex-col p-2' >
         <NewPost />
         {postData.map(post => {
           return(
