@@ -1,6 +1,6 @@
-import NotificationDetail from '../web/components/notificatition/NotificationComponent'
+import NotificationComponent from '../web/components/notificatition/NotificationComponent'
 export default function notification(props) {
-  return (<NotificationDetail {...props} />
+  return (<NotificationComponent {...props} />
   )
 }
 export async function getServerSideProps({ req, res }) {

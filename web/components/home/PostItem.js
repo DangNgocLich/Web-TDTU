@@ -72,7 +72,7 @@ function PostItem(props) {
           e.preventDefault()
           socket.emit("onComment", {
             postID: _id,
-            uid: "609ff716b467e3161111427f",
+            uid: user._id,
             content: comment
           })
           setComment('')

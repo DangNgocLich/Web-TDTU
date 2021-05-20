@@ -5,7 +5,15 @@ export const getNotificationAPI = (input) => {
     method: "GET",
   })
     .then(result => result)
-    .catch(err => ({ resultCode: -1, message: "Không thế kết nối" ,}))
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối", }))
+}
+export const getNotificationByIdAPI = (input) => {
+  return fetchAPI({
+    url: `notification/getNotification/${input._id}`,
+    method: "GET",
+  })
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối", }))
 }
 export const addNotificationAPI = (input) => {
   return fetchAPI({

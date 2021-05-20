@@ -31,7 +31,7 @@ const httpServer = app.listen(port, (err) => {
 
 
 
-const {Comment, Post} = require('./model/Post')
+const { Comment, Post } = require('./model/Post')
 const io = socketio(httpServer)
 io.on('connection', (socket) => {
     let addedUser = false;
@@ -47,9 +47,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('onComment', (data) => {
-        const {postID, uid, content} = data
-        if(!(postID || uid || content)) return
-        Comment.create({by: uid, content}).then(comment => {
+        const { postID, uid, content } = data
+        if (!(postID || uid || content)) return
+        Comment.create({ by: uid, content }).then(comment => {
             Post.findById(postID).then(post => {
                 post.comment.push(comment._id)
                 post.save().then(result => {
@@ -59,11 +59,19 @@ io.on('connection', (socket) => {
                 })
             })
         })
-
-        // socket.broadcast.emit('new message', {
-        //     username: socket.username,
-        //     message: data
-        // });
     });
+    socket.on('onPost', (data) => {
+        const { postID, uid, title } = data
+        console.log(123213, data)
+        if (!(postID || uid || title)) return
+        Post.findById(postID).populate({ path: "deparment" }).then((result) =>
+            io.emit("postSuccess", {
+                // postID: postID,
+                // title: title,
+                // deparment: result.deparment.label
+            }))
+
+    });
+
 })
 appNext.prepare()
