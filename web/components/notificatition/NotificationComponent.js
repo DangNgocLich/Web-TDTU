@@ -1,13 +1,14 @@
-import { Button, Modal, TextField, TextareaAutosize, FormControl, InputLabel, Select, MenuItem, FormHelperText, Typography } from '@material-ui/core'
+import { Button, Modal, TextField, TextareaAutosize, FormControl, InputLabel, Select, MenuItem, Menu, Typography, MenuList } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { Pagination } from '@material-ui/lab';
 import {
-  addNotificationAPI, getNotificationAPI, getLengthNotification
+  addNotificationAPI, getNotificationAPI, getLengthNotification, deleteNotificationAPI, updateNotificationAPI
 } from '../../api/notificaitionAPI'
 import {
   getDepartmentUserByID,
 } from '../../api/authAPI'
 import UserProfile from '../../userProfile/UserProfile';
+import { FaceRounded, MoreHoriz } from '@material-ui/icons'
 export default function HomeComponent({ router, socket }) {
   const [title, settitle] = useState('')
   const [addnotification, setaddnotification] = useState(false)
@@ -17,6 +18,51 @@ export default function HomeComponent({ router, socket }) {
   const [notification, setNotification] = useState()
   const [page, setPage] = useState(0)
   const [length, setlength] = useState(1)
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [edit, setEdit] = useState(false)
+  const [_id, setId] = useState()
+  const [fillter, setFillter] = useState()
+
+  const [alldepartment, setAlldeparment] = useState()
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleEdit = (id, title, content) => {
+    settitle(title)
+    setcontent(content)
+    setId(id)
+    setaddnotification(true)
+    setEdit(true)
+  };
+  const handleDelete = (_id) => {
+    if (confirm("Bạn có Chắc là xóa Chứ"))
+      deleteNotificationAPI({ _id }).then(result => {
+        console.log(result)
+        if (result.resultCode === 1) {
+          getNotificationAPI({ limit: 10, page }).then(result => {
+            if (result.resultCode === 1) {
+              setNotification(result.data)
+            }
+          })
+          handleClose()
+        }
+      })
+  };
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = React.useRef(open);
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = open;
+  }, [open]);
   useEffect(() => {
     getDepartmentUserByID()
       .then(result => {
@@ -33,11 +79,14 @@ export default function HomeComponent({ router, socket }) {
       })
   }, [])
   useEffect(() => {
-    getNotificationAPI({ limit: 10, page }).then(result => {
-      if (result.resultCode === 1) {
-        setNotification(result.data)
-      }
-    })
+
+    if (fillter)
+      getNotificationAPI({ limit: 10, page }).then(result => {
+        if (result.resultCode === 1) {
+          setNotification(result.data)
+        }
+      })
+
   }, [page])
 
   const limitText = (text) => {
@@ -56,46 +105,102 @@ export default function HomeComponent({ router, socket }) {
         setPage(parseInt(value) - 1);
       }} >
       </Pagination>
-      {UserProfile.data.data?.role === "2" && <Typography style={{
+      {UserProfile.data?.role === "2" && <Typography style={{
         margin: 20
       }}>  <button type="button" onClick={() => setaddnotification(true)}>
           Tạo Bài Viết</button>
       </Typography>}
+      {/* <FormControl style={{
+        marginBottom: 20,
+        marginLeft: 20,
+        width: "90%",
+      }}>
 
-      {notification?.map((item) =>
-        <div style={{
-          borderLeft: 1,
-          borderLeftStyle: "solid",
-          justifyContent: "flex-start",
-          marginLeft: 20,
-          width: "90%",
-          marginBottom: 20
-        }} className='flex flex-col w-full  bg-white  p-6'>
-          <InputLabel
-            style={{
-              fontSize: 25,
-              color: "blue"
-            }} id="demo-simple-select-helper-label">{item.title}</InputLabel>
-          <p>
-            {limitText(item.content)}
-          </p>
-          <a
-            onClick={() => { router.push({ pathname: "/", query: { ngu: 1 } }) }}
-            style={{
-              color: "blue"
-            }}>Chi tiết thông báo</a>
-          <div className='text-right' style={{
+        <InputLabel id="demo-simple-select-helper-label">Phòng Ban</InputLabel>
+        <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          value={selectdepartment}
+          onChange={(event) => {
+            if (event.target.value = "tatca")
+              setselectdepartment(event.target.value)
 
-          }}>
-            <p style={{
-              fontStyle: "italic",
-              textAlign: 'right'
-            }}
-              className='text-gray-500'>{notification && notification[0].department.label} | Ngày Đăng {notification && new Date(notification[0].createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+          }}
+        >
+          <MenuItem value="tatca">
+            Tất Cả
+            </MenuItem>
+          {department.map((item) =>
+            <MenuItem value={item._id}>
+              {item.label}
+            </MenuItem>
+          )}
+        </Select>
+      </FormControl> */}
+      {
+        notification?.map((item) =>
+          <div style={{
+            borderLeft: 1,
+            borderLeftStyle: "solid",
+            justifyContent: "flex-start",
+            marginLeft: 20,
+            width: "90%",
+            marginBottom: 20
+
+          }} className='flex flex-col w-full  bg-white  p-6'>
+
+            <div className='w-full'>
+              <div
+                className='flex'
+              >
+                <p className='font-medium flex-1' >{item.title}</p>
+                {UserProfile.data.id == item.uid._id && <Button
+                  className='focus:outline-none'
+                  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}
+                >
+                  <MoreHoriz fontSize='small' />
+                </Button>}
+
+              </div>
+            </div>
+            <Menu
+              style={{
+                alignSelf: "flex-end",
+                justifyContent: "flex-end"
+              }}
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={() => {
+                handleEdit(item._id, item.title, item.content,)
+              }}>Edit</MenuItem>
+              <MenuItem onClick={() => {
+                handleDelete(item._id)
+              }}>Delete</MenuItem>
+            </Menu>
+            <p>
+              {limitText(item.content)}
             </p>
+            <a
+              onClick={() => { router.push({ pathname: "detailnofication", query: { _id: item._id } }) }}
+              style={{
+                color: "blue"
+              }}>Chi tiết thông báo</a>
+            <div className='text-right' style={{
+            }}>
+              <p style={{
+                fontStyle: "italic",
+                textAlign: 'right'
+              }}
+                className='text-gray-500'>{item && item.department.label} | Ngày Đăng {item && new Date(item.createdAt).toISOString().replace(/T.*/, '').split('-').reverse().join('-')}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <Modal
         style={{
@@ -113,24 +218,43 @@ export default function HomeComponent({ router, socket }) {
           onSubmit={(e) => {
             e.preventDefault();
             setaddnotification(false)
-            addNotificationAPI({ title, content, department: selectdepartment })
-              .then(result => {
-                alert(result.message)
-                if (result.resultCode == "1") {
-                  socket.emit("onPost", {
-                    postID: result.data,
-                    uid: UserProfile.data.data.id,
-                    title: title
-                  })
-                  settitle("")
-                  setcontent("")
-                  getNotificationAPI({ limit: 10, page }).then(result => {
-                    if (result.resultCode === 1) {
-                      setNotification(result.data)
-                    }
-                  })
+            if (edit) {
+              setEdit(false)
+              console.log({ title, content, _id })
+              updateNotificationAPI({ title, content, _id }).then(result => {
+                if (result.resultCode === 1) {
+                  alert(result.message)
                 }
               })
+              settitle("")
+              setcontent("")
+              getNotificationAPI({ limit: 10, page }).then(result => {
+                if (result.resultCode === 1) {
+                  setNotification(result.data)
+                }
+              })
+            }
+            else {
+              addNotificationAPI({ title, content, department: selectdepartment })
+                .then(result => {
+                  alert(result.message)
+                  if (result.resultCode == "1") {
+                    socket.emit("onPost", {
+                      postID: result.data,
+                      uid: UserProfile.data.id,
+                      title: title
+                    })
+                    settitle("")
+                    setcontent("")
+                    setselectdepartment({})
+                    getNotificationAPI({ limit: 10, page }).then(result => {
+                      if (result.resultCode === 1) {
+                        setNotification(result.data)
+                      }
+                    })
+                  }
+                })
+            }
 
           }}
           style={{
@@ -178,23 +302,22 @@ export default function HomeComponent({ router, socket }) {
               marginBottom: 20,
               width: "100%"
             }}>
-              <InputLabel id="demo-simple-select-helper-label">Phòng Ban</InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={selectdepartment}
-                onChange={(event) => {
-                  setselectdepartment(event.target.value)
-                }}
-              >
-
-                {department.map((item) =>
-                  <MenuItem value={item._id}>
-                    {item.label}
-                  </MenuItem>
-                )}
-              </Select>
-
+              {!edit && <>
+                <InputLabel id="demo-simple-select-helper-label">Phòng Ban</InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={selectdepartment}
+                  onChange={(event) => {
+                    setselectdepartment(event.target.value)
+                  }}
+                >
+                  {department.map((item) =>
+                    <MenuItem value={item._id}>
+                      {item.label}
+                    </MenuItem>
+                  )}
+                </Select></>}
             </FormControl>
           </div>
 
@@ -208,7 +331,7 @@ export default function HomeComponent({ router, socket }) {
         </Button>
         </form>
       </Modal>
-    </div>
+    </div >
 
   )
 

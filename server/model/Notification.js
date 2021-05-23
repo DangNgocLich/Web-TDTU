@@ -10,6 +10,7 @@ var NotificationSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     department: { type: Schema.Types.ObjectId, ref: 'Department' },
+    uid: { type: Schema.Types.ObjectId, ref: 'User' },
 },{ timestamps: true });
 var Notification = mongoose.model('Notification', NotificationSchema, 'Notification');
 

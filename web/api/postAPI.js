@@ -11,7 +11,7 @@ export const addPostAPI = (input) => {
 }
 
 export const getPostsAPI = (input) => {
-  const {limit} = input
+  const { limit } = input
   return fetchAPI({
     url: `post/getPost?limit=${limit}&limitComment=3`,
     method: "GET",
@@ -23,7 +23,7 @@ export const getPostsAPI = (input) => {
     .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
 }
 
-export const getPostByIDAPI = ({id, limitComment}) => {
+export const getPostByIDAPI = ({ id, limitComment }) => {
   return fetchAPI({
     url: `post/getPostByID?id=${id}&limitComment=${limitComment}`,
     method: "GET",
@@ -40,4 +40,23 @@ export const deleteCommentAPI = (input) => {
   })
     .then(result => result)
     .catch(err => ({ resultCode: -1, message: "Không thế kết nối" }))
+}
+
+export const deletePostAPI = (input) => {
+  return fetchAPI({
+    url: `post/deletePost/${input._id}`,
+    method: "POST",
+    body: input
+  })
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối", err }))
+}
+export const updatePostAPI = (input) => {
+  return fetchAPI({
+    url: `post/updatePost/${input._id}`,
+    method: "POST",
+    body: input
+  })
+    .then(result => result)
+    .catch(err => ({ resultCode: -1, message: "Không thế kết nối", err }))
 }

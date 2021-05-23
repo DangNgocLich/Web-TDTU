@@ -29,13 +29,16 @@ export default function HomeComponent({ router, socket }) {
     socket?.off('commentSuccess');
     socket?.on("commentSuccess", data => {
       const { postID } = data;
+      console.log(postID)
       reloadByPostID(postID)
       // 
     })
     socket?.off('onCommentDelete');
     socket?.on("onCommentDelete", data => {
       const { postID } = data
+      console.log("onCommentDeleteonCommentDeleteonCommentDeleteonCommentDeleteonCommentDeleteonCommentDeleteonCommentDeleteonCommentDeleteonCommentDelete")
       reloadByPostID(postID)
+      getPosts()
     })
   }, [postData])
 

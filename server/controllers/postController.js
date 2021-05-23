@@ -53,13 +53,32 @@ const updatePostController = async (req, res) => {
         }
     }
     if (!content) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
-    await Post.findOneAndUpdate({ _id: id }, data)
-    return res.status(200).json({ resultCode: 1, "message": "Cập nhập thành công" },)
+    await Post.findOneAndUpdate({ _id: id }, data).then(post => {
+        if (post) {
+            const { io } = require('../app')
+            console.log(post)
+            io.emit("onCommentDelete", {
+                postID: post.postID
+            })
+            return res.status(200).json({ resultCode: 1, "message": "Cập nhập thành công" })
+        }
+    })
+    // return res.status(200).json({ resultCode: 1, "message": "Cập nhập thành công" },)
 }
 const deletePostController = async (req, res) => {
     const id = req.params.id
-    await Post.findByIdAndDelete({ _id: id })
-    return res.status(200).json({ resultCode: 1, "message": "Xóa thành công" },)
+    console.log(id)
+    await Post.findByIdAndDelete({ _id: id }).then(post => {
+        if (post) {
+            const { io } = require('../app')
+            console.log(post)
+            io.emit("onCommentDelete", {
+                postID: post.postID
+            })
+            return res.status(200).json({ resultCode: 1, "message": "Xóa thành công" })
+        }
+        return res.status(200).json({ resultCode: -1, "message": "Không thể xóa" })
+    })
 }
 
 const deleteCommentController = async (req, res) => {
@@ -67,7 +86,7 @@ const deleteCommentController = async (req, res) => {
     const { id } = req.body
     Comment.findByIdAndDelete({ _id: id, by: uid }).then(comment => {
         if (comment) {
-            const {io} = require('../app')
+            const { io } = require('../app')
             io.emit("onCommentDelete", {
                 postID: comment.postID
             })

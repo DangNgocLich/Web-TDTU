@@ -12,8 +12,8 @@ const menu = [
         onClick: (router) => router.push('/allnotification')
       },
       {
-        title: "Phòng Ban",
-        onClick: (router) => router.push('/phongban')
+        title: "User",
+        onClick: (router) => router.push('/user')
       }
     ]
   }

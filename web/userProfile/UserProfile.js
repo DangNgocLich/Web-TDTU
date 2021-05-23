@@ -5,5 +5,5 @@ const UserProfile = {
   data: {
   }
 }
-verifyToken(cookie.load('accessToken'), accessTokenSecret).then(result => UserProfile.data = result)
+verifyToken(cookie.load('accessToken'), accessTokenSecret).then(result => UserProfile.data = result.data)
 export default UserProfile

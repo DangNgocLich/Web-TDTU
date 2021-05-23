@@ -3,13 +3,16 @@ const bcrypt = require('bcrypt');
 
 const addNotifycationController = async (req, res) => {
     const { title, content, department } = req.body
+    const uid = req.jwtDecoded.data.id
     if (!title || !content || !department) return res.status(400).json({ resultCode: -1, "message": "Vui Lòng Nhập Thông tin" })
     let body = {}
+    body["uid"] = uid
     for (const key in req.body) {
         if (req.body[key]) {
             body[key] = req.body[key]
         }
     }
+    console.log(body)
     var notificaltion = new Notification(body)
     notificaltion.save(function (err, notificaltion) {
         if (err) return console.error(err);

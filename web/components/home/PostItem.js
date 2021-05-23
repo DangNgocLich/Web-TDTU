@@ -1,10 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { FaceRounded, MoreHoriz } from '@material-ui/icons'
-import { deleteCommentAPI, getPostByIDAPI } from '../../api/postAPI'
+import { deleteCommentAPI, getPostByIDAPI, deletePostAPI, updatePostAPI } from '../../api/postAPI'
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import cookie from 'react-cookies'
+import UserProfile from '../../userProfile/UserProfile'
 function PostItem(props) {
 
   const { _id, user, createdAt, socket, content, reload } = props
@@ -14,7 +15,15 @@ function PostItem(props) {
   const [comments, setComments] = useState(props.comment)
   const createDate = useCallback(() => new Date(createdAt), [createdAt])
 
+  const [cmID, setCmId] = useState("")
+
+  const [edit, setEdit] = useState(false)
+  const [editPost, setEditPost] = useState(false)
   const [isMoreComment, setMoreComment] = useState(false)
+
+
+  const [contentUpdate, setContentUpdate] = useState(content)
+
 
   useEffect(() => {
     getPostByIDAPI({ id: _id, limitComment }).then(result => {
@@ -31,13 +40,34 @@ function PostItem(props) {
         <FaceRounded
           fontSize='large'
         />
-        <div className='text-left'>
+        <div className='text-left flex-1'>
           <p className='font-medium'>{user?.displayName}</p>
           <p className='text-sm text-gray-500'>{createDate().toDateString()}</p>
         </div>
+        <div className='text-right'>
+          <CommentOption handleEdit={() => {
+            setEditPost(true)
+          }} cmID={_id} type />
+        </div>
       </div>
       <div className="flex border-b-2 text-gray-800">
-        <p className = 'whitespace-pre-line' aria-multiline = {true}>{content}</p>
+        {editPost ? <form className='flex-1'
+          onSubmit={(e) => {
+            e.preventDefault()
+            setEditPost(false)
+            updatePostAPI({ _id, content: contentUpdate })
+          }}
+        >
+          <input autoFocus
+            defaultValue={contentUpdate}
+            onChange={(e) => setContentUpdate(e.target.value)}
+            type='text' border-b-2
+            className='w-full bg-gray-200 rounded-xl p-2 focus:outline-none' />
+          <button
+            type='submit'
+          >
+          </button>
+        </form> : <p className='whitespace-pre-line' aria-multiline={true}>{content}</p>}
       </div>
       <div className='ml-4 mb-2' >
         {comments?.map(cm => {
@@ -46,12 +76,17 @@ function PostItem(props) {
               <FaceRounded
                 fontSize='large'
               />
-              <div className = 'w-full'>
+              <div className='w-full'>
                 <div
-                  className = 'flex'
+                  className='flex'
                 >
                   <p className='font-medium flex-1' >{cm.by.displayName}</p>
-                  <CommentOption cmID = {cm._id} />
+                  {UserProfile.data.id == cm.by._id && <CommentOption cmID={cm._id} handleEdit={() => {
+                    setComment(cm.content)
+                    setEdit(true)
+                    setCmId(cm._id)
+                  }} />}
+
                 </div>
                 <p className='text-gray-700'>{cm.content}</p>
               </div>
@@ -70,13 +105,22 @@ function PostItem(props) {
       <form className='flex'
         onSubmit={(e) => {
           e.preventDefault()
-          if(!comment) return
+          if (!comment) return
           console.log(cookie.load('uid', true))
-          socket.emit("onComment", {
-            postID: _id,
-            uid: cookie.load('uid', true),
-            content: comment
-          })
+          if (edit) {
+            socket.emit("onUpdate", {
+              cmId: cmID,
+              postID: _id,
+              content: comment
+            })
+            setEdit(false)
+          }
+          else
+            socket.emit("onComment", {
+              postID: _id,
+              uid: cookie.load('uid', true),
+              content: comment
+            })
           setComment('')
         }}
       >
@@ -96,7 +140,7 @@ function PostItem(props) {
   )
 }
 
-const CommentOption = memo(({cmID}) => {
+const CommentOption = memo(({ cmID, handleEdit, type }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -107,25 +151,27 @@ const CommentOption = memo(({cmID}) => {
     setAnchorEl(null);
   };
 
-  const handleEdit = () => {
-    handleClose()
-    alert("This fuction is on proccess")
-  }
-  
+
+
   const handleDelete = () => {
     handleClose()
-    deleteCommentAPI({id: cmID}).then(result => {
-      if(result.resultCode !== 1) alert(result.message)
-    })
+    if (!type)
+      deleteCommentAPI({ id: cmID }).then(result => {
+        if (result.resultCode !== 1) alert(result.message)
+      })
+    else
+      deletePostAPI({ _id: cmID }).then(result => {
+        if (result.resultCode !== 1) alert(result.err)
+      })
   }
 
   return (
     <div>
       <Button
-        className = 'focus:outline-none'
+        className='focus:outline-none'
         aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}
       >
-        <MoreHoriz fontSize = 'small' />
+        <MoreHoriz fontSize='small' />
       </Button>
       <Menu
         id="simple-menu"
@@ -134,7 +180,10 @@ const CommentOption = memo(({cmID}) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={() => {
+          handleClose()
+          handleEdit()
+        }}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </div>

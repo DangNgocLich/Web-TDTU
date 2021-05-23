@@ -1,4 +1,4 @@
-import NotificationComponent from '../web/components/notificatition/NotificationComponent'
+import NotificationComponent from '../web/components/notificatition/NotificationDetail'
 export default function notification(props) {
   return (<NotificationComponent {...props} />
   )

@@ -17,6 +17,8 @@ router.get('/getNotification', async function (req, res, next) {
     res.status(200).json({
         resultCode: 1, data: await Notification.find({}, null, { skip: parseInt(page * limit) }).populate({
             path: "department",
+        }).populate({
+            path: "uid",
         }).limit(parseInt(limit)).sort({ updatedAt: -1 })
     })
 });

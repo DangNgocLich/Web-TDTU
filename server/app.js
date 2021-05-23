@@ -60,6 +60,16 @@ io.on('connection', (socket) => {
             })
         })
     });
+    socket.on('onUpdate', (data) => {
+        const { cmId, content, postID } = data
+        if (!cmId || !content || !postID) return
+        console.log(cmId)
+        Comment.findOneAndUpdate({ _id: cmId }, { content }).then(comment => {
+            io.emit("commentSuccess", {
+                postID: postID
+            })
+        })
+    });
     socket.on('onPost', (data) => {
         const { postID, uid, title } = data
         console.log(123213, data)
