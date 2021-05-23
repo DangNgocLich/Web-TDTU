@@ -19,9 +19,9 @@ const AuthMiddleware = require('../middleware/AuthMiddleware');
 require('../config/passport')(passport);
 router.use(passport.initialize());
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/register' }),
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '../../../fail' }),
     async function (req, res) {
-        const token = await generateToken(req.user, accessTokenSecret, '1d')
+        const token = await generateToken(req.user, accessTokenSecret, '30d')
         res.cookie('accessToken', token)
         res.cookie('uid', req.user.id)
         res.redirect('/');

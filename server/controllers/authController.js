@@ -18,7 +18,7 @@ const loginController = async (req, res) => {
         else {
             bcrypt.compare(password, user.password).then(async result => {
                 if (result) {
-                    accessToken = await generateToken({ _id: user._id, role: user.role }, accessTokenSecret, "1d");
+                    accessToken = await generateToken({ _id: user._id, role: user.role }, accessTokenSecret, "30d");
                     res.cookie('accessToken', accessToken)
                     res.cookie('uid', user.id)
                     return res.status(200).json({ resultCode: 1, accessToken });
