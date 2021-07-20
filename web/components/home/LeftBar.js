@@ -1,7 +1,7 @@
 import { Button, ButtonBase, Collapse, List, ListItemText } from '@material-ui/core';
 import { ExpandLess, ExpandMore, Home, List as ListIcon } from '@material-ui/icons'
 import React from 'react'
-
+import UserProfile from '../../userProfile/UserProfile';
 const menu = [
   {
     icon: ListIcon,
@@ -12,7 +12,7 @@ const menu = [
         onClick: (router) => router.push('/allnotification')
       },
       {
-        title: "User",
+        title: UserProfile.data?.role == "3" && "User",
         onClick: (router) => router.push('/user')
       }
     ]
@@ -36,7 +36,7 @@ export default function LeftBar({ router }) {
         <button className={'flex w-full p-2 text-left focus:outline-none text-white'} onClick={() => {
           router.push('/')
         }}>
-          <Home /><div className = 'w-2 h-2' />Trang chủ
+          <Home /><div className='w-2 h-2' />Trang chủ
         </button>
         {
           menu.map((dad, dadIndex) => {
@@ -46,7 +46,7 @@ export default function LeftBar({ router }) {
                 <Collapse component="li" in={open[dadIndex]} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {dad.child.map(child => {
-                      return <ChildItem
+                      return child.title && <ChildItem
                         {...child}
                         onClick={() => {
                           child.onClick(router)
@@ -65,7 +65,7 @@ export default function LeftBar({ router }) {
 }
 
 function ChildItem(props) {
-  const { open, onClick, className,icon, title } = props;
+  const { open, onClick, className, icon, title } = props;
   return (
     <li>
       <button className={'w-full text-left focus:outline-none '} onClick={() => {
@@ -86,7 +86,7 @@ function ContainItem(props) {
         onClick && onClick()
       }}>
         <Icon />
-        <div className = 'w-2 h-2' />
+        <div className='w-2 h-2' />
         <ListItemText primary={title} translate={'no'} className='text-white' />
         {open != null ? open ? <ExpandLess htmlColor='white' /> : <ExpandMore htmlColor='white' /> : null}
       </button>
