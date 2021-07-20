@@ -2,6 +2,9 @@ import { Button, ButtonBase, Collapse, List, ListItemText } from '@material-ui/c
 import { ExpandLess, ExpandMore, Home, List as ListIcon } from '@material-ui/icons'
 import React from 'react'
 import UserProfile from '../../userProfile/UserProfile';
+// import { verifyToken } from "";
+// import { accessTokenSecret } from '../../server/middleware/AuthMiddleware'
+
 const menu = [
   {
     icon: ListIcon,
@@ -12,12 +15,13 @@ const menu = [
         onClick: (router) => router.push('/allnotification')
       },
       {
-        title: UserProfile.data?.role == "3" && "User",
+        title: "User",
         onClick: (router) => router.push('/user')
       }
     ]
   }
 ]
+
 
 export default function LeftBar({ router }) {
   const [open, setOpen] = React.useState(menu.map(() => false));
@@ -46,12 +50,21 @@ export default function LeftBar({ router }) {
                 <Collapse component="li" in={open[dadIndex]} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {dad.child.map(child => {
-                      return child.title && <ChildItem
-                        {...child}
-                        onClick={() => {
-                          child.onClick(router)
-                        }}
-                      />
+                      if (child.title == "Tất cả") {
+                        return <ChildItem
+                          {...child}
+                          onClick={() => {
+                            child.onClick(router)
+                          }}
+                        />
+                      }
+                      if (UserProfile.data.role == "3" && child.title == "User")
+                        return <ChildItem
+                          {...child}
+                          onClick={() => {
+                            child.onClick(router)
+                          }}
+                        />
                     })}
                   </List>
                 </Collapse>
