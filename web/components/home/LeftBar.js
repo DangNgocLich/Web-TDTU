@@ -1,10 +1,10 @@
 import { Button, ButtonBase, Collapse, List, ListItemText } from '@material-ui/core';
 import { ExpandLess, ExpandMore, Home, List as ListIcon } from '@material-ui/icons'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import UserProfile from '../../userProfile/UserProfile';
-// import { verifyToken } from "";
-// import { accessTokenSecret } from '../../server/middleware/AuthMiddleware'
-
+import { verifyToken } from "../../../server/helpers/jwt.helper";
+import cookie from 'react-cookies'
+import { accessTokenSecret } from '../../../server/middleware/AuthMiddleware'
 const menu = [
   {
     icon: ListIcon,
@@ -25,12 +25,16 @@ const menu = [
 
 export default function LeftBar({ router }) {
   const [open, setOpen] = React.useState(menu.map(() => false));
-
+  const [role, setRole] = React.useState(null);
   const handleOpen = (index) => {
     open[index] = !open[index]
     setOpen([...open])
   }
-
+  useEffect(() => {
+    verifyToken(cookie.load('accessToken'), accessTokenSecret).then(result => {
+      setRole(result.data.role)
+    })
+  })
   return (
     <nav className={'min-w-72'} aria-label="mailbox folders">
       <List className='h-full bg-yellow-800'>
@@ -58,7 +62,7 @@ export default function LeftBar({ router }) {
                           }}
                         />
                       }
-                      if (UserProfile.data.role == "3" && child.title == "User")
+                      if (role == "3" && child.title == "User")
                         return <ChildItem
                           {...child}
                           onClick={() => {
