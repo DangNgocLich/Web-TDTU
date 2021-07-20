@@ -4,7 +4,7 @@
  */
 
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://admin:123123123@cluster0.oajg1.mongodb.net/tdt_social";
+const uri = "mongodb+srv://admin:123123123@cluster0.ya4v2.mongodb.net/tdt_social";
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
