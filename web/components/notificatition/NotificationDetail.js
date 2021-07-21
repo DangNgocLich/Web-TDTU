@@ -7,10 +7,14 @@ import {
 import {
   getDepartmentUserByID,
 } from '../../api/authAPI'
-import UserProfile from '../../userProfile/UserProfile';
+// import UserProfile from '../../userProfile/UserProfile';
+import { verifyToken } from "../../../server/helpers/jwt.helper";
+import cookie from 'react-cookies'
+import { accessTokenSecret } from '../../../server/middleware/AuthMiddleware'
 import { FaceRounded, MoreHoriz } from '@material-ui/icons'
 export default function NotificationDetail({ router, socket }) {
   const [title, settitle] = useState('')
+  const [userProfile, setUserProfile] = React.useState(null);
   const [addnotification, setaddnotification] = useState(false)
   const [content, setcontent] = useState('')
   const [department, setdepartment] = useState([])
@@ -27,7 +31,11 @@ export default function NotificationDetail({ router, socket }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  useEffect(() => {
+    verifyToken(cookie.load('accessToken'), accessTokenSecret).then(result => {
+      setRole(result.data.role)
+    })
+  })
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -265,7 +273,7 @@ export default function NotificationDetail({ router, socket }) {
             type='submit'
           >
             Đăng Nội Dung
-  </Button>
+          </Button>
         </form>
       </Modal>
     </div>
